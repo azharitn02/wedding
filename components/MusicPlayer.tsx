@@ -65,6 +65,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ isOpened }) => {
           autoplay: 0, // Don't autoplay — we'll call playVideo() manually after user gesture
           loop: 2,
           playlist: 'l38Aru5jICw',
+          start: 47, // Start the music at 46 seconds
           controls: 0,
           showinfo: 0,
           modestbranding: 1,
