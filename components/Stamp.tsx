@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn, getAssetPath } from '@/lib/utils';
 import Image from 'next/image';
 
 interface StampProps {
@@ -16,7 +16,7 @@ export default function Stamp({ children, className }: StampProps) {
       {/* <div className="absolute inset-[-20px] md:inset-[-40px] z-[-1] drop-shadow-xl"> */}
       <div className="absolute inset-0 z-[-1] drop-shadow-xl">
         <Image 
-          src="/bg1.png" 
+          src={getAssetPath('/bg1.png')} 
           alt="Stamp Border" 
           fill
           className="object-contain"

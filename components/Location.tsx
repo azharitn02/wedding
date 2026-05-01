@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { useRef } from 'react';
 import { MapPin, Navigation } from 'lucide-react';
 import { WeddingData } from '@/lib/data';
+import { getAssetPath } from '@/lib/utils';
 import FloralFrame from './FloralFrame';
 
 interface LocationProps {
@@ -111,7 +112,7 @@ export default function Location({ data }: LocationProps) {
            
            {/* Decorative Stamp */}
            <div className="absolute -top-6 -right-6 w-20 h-20 z-20 transform -rotate-12 pointer-events-none opacity-90">
-              <img src="/border.png" alt="Stamp" className="w-full h-full object-contain" />
+              <img src={getAssetPath('/border.png')} alt="Stamp" className="w-full h-full object-contain" />
            </div>
         </div>
       </div>

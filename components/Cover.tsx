@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { WeddingData } from '@/lib/data';
+import { getAssetPath } from '@/lib/utils';
 import FloralFrame from './FloralFrame';
 
 interface CoverProps {
@@ -90,7 +91,7 @@ export default function Cover({ data, onOpen }: CoverProps) {
       className="w-full bg-[#E8E4DC] flex justify-center overflow-hidden"
     >
       <div className="relative w-full max-w-[500px] min-h-screen shadow-2xl">
-        <img src="/bgfix.jpg" alt="Cover Background" className="w-full min-h-screen object-cover block pointer-events-none" />
+        <img src={getAssetPath('/bgfix.jpg')} alt="Cover Background" className="w-full min-h-screen object-cover block pointer-events-none" />
         
         <div ref={elementsRef} className="absolute inset-0 z-10 w-full h-full mx-auto">
           
@@ -98,7 +99,7 @@ export default function Cover({ data, onOpen }: CoverProps) {
           <div className="stagger-el absolute left-5 right-0 top-[29%] h-[25%] flex justify-center items-center pointer-events-none">
             <div className="relative w-full h-full mx-8">
               <Image 
-                src="/bridename.gif" 
+                src={getAssetPath('/bridename.gif')} 
                 alt="Bride Name" 
                 fill 
                 className="object-contain" 
@@ -111,7 +112,7 @@ export default function Cover({ data, onOpen }: CoverProps) {
           <div className="stagger-el absolute left-5 right-0 top-[46%] h-[25%] flex justify-center items-center pointer-events-none">
             <div className="relative w-full h-full mx-8">
               <Image 
-                src="/groomname.gif" 
+                src={getAssetPath('/groomname.gif')} 
                 alt="Groom Name" 
                 fill 
                 className="object-contain" 

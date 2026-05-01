@@ -2,11 +2,12 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { getAssetPath } from '@/lib/utils';
 
 export const FlowerShape = ({ className }: { className?: string }) => (
   <div className={`relative w-full h-full ${className || ''}`}>
     <Image 
-      src="/flower2.png" 
+      src={getAssetPath('/flower2.png')} 
       alt="Flower Decoration" 
       fill 
       className="object-contain opacity-50"
@@ -18,7 +19,7 @@ export const FlowerShape = ({ className }: { className?: string }) => (
 export const Flower1 = ({ className }: { className?: string }) => (
   <div className={`relative w-full h-full ${className || ''}`}>
     <Image 
-      src="/flower1.png" 
+      src={getAssetPath('/flower1.png')} 
       alt="Flower Decoration 1" 
       fill 
       className="object-contain opacity-80"
@@ -30,7 +31,7 @@ export const Flower1 = ({ className }: { className?: string }) => (
 export const Flower3 = ({ className }: { className?: string }) => (
   <div className={`relative w-full h-full ${className || ''}`}>
     <Image 
-      src="/flower3.png" 
+      src={getAssetPath('/flower3.png')} 
       alt="Flower Decoration 3" 
       fill 
       className="object-contain opacity-80"
@@ -42,7 +43,7 @@ export const Flower3 = ({ className }: { className?: string }) => (
 export const Flower4 = ({ className }: { className?: string }) => (
   <div className={`relative w-full h-full ${className || ''}`}>
     <Image 
-      src="/flower4.png" 
+      src={getAssetPath('/flower4.png')} 
       alt="Flower Decoration 4" 
       fill 
       className="object-contain opacity-80"
@@ -54,7 +55,7 @@ export const Flower4 = ({ className }: { className?: string }) => (
 export const Flower5 = ({ className }: { className?: string }) => (
   <div className={`relative w-full h-full ${className || ''}`}>
     <Image 
-      src="/flower5.png" 
+      src={getAssetPath('/flower5.png')} 
       alt="Flower Decoration 5" 
       fill 
       className="object-contain opacity-80"
@@ -74,7 +75,7 @@ export const HeartIcon = ({ className, fillOpacity = 0.1 }: { className?: string
 export const StampCorner = ({ className }: { className?: string }) => (
   <div className={`relative ${className}`}>
     <Image 
-      src="/border.png" 
+      src={getAssetPath('/border.png')} 
       alt="Corner Decoration" 
       width={100} 
       height={100} 
@@ -87,7 +88,7 @@ export const StampCorner = ({ className }: { className?: string }) => (
 export const BrideIllustration = ({ className }: { className?: string }) => (
   <div className={`relative flex flex-col items-center justify-center w-32 h-32 ${className || ''}`}>
     <Image 
-      src="/bride.png" 
+      src={getAssetPath('/bride.png')} 
       alt="Bride Illustration" 
       fill
       className="object-contain"
@@ -99,7 +100,7 @@ export const BrideIllustration = ({ className }: { className?: string }) => (
 export const GroomIllustration = ({ className }: { className?: string }) => (
   <div className={`relative flex flex-col items-center justify-center w-32 h-32 ${className || ''}`}>
     <Image 
-      src="/groom.png" 
+      src={getAssetPath('/groom.png')} 
       alt="Groom Illustration" 
       fill
       className="object-contain"
@@ -111,7 +112,7 @@ export const GroomIllustration = ({ className }: { className?: string }) => (
 export const CoupleIllustration = ({ className }: { className?: string }) => (
   <div className={`relative flex flex-col items-center justify-center w-64 h-64 ${className || ''}`}>
     <Image 
-      src="/couple-with-background.png" 
+      src={getAssetPath('/couple-with-background.png')} 
       alt="Couple Illustration" 
       fill
       className="object-contain opacity-90"

@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 import { WeddingData } from '@/lib/data';
+import { getAssetPath } from '@/lib/utils';
 import Image from 'next/image';
 
 interface OpeningPrayerProps {
@@ -34,7 +35,7 @@ export default function OpeningPrayer({ data }: OpeningPrayerProps) {
       <div className="relative w-full max-w-[500px] min-h-screen">
         {/* Background Image - The "Frame" */}
         <img 
-          src="/illusbg.gif" 
+          src={getAssetPath('/illusbg.gif')} 
           alt="Opening Prayer Background" 
           className="prayer-bg-img w-full min-h-screen object-cover block" 
         />

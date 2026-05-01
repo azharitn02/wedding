@@ -3,6 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
+import { getAssetPath } from '@/lib/utils';
 
 export default function CoupleClosing() {
   const containerRef = useRef<HTMLElement>(null);
@@ -31,7 +32,7 @@ export default function CoupleClosing() {
     <section ref={containerRef} className="w-full bg-[#E8E4DC] flex justify-center overflow-hidden">
       <div className="relative w-full max-w-[500px] min-h-screen shadow-2xl">
         {/* Background Image */}
-        <img src="/b2/section9.JPG" alt="Cover Background" className="w-full min-h-screen object-cover block pointer-events-none"/>
+        <img src={getAssetPath('/b2/section9.JPG')} alt="Cover Background" className="w-full min-h-screen object-cover block pointer-events-none"/>
 
         {/* Content Overlay */}
         <div ref={elementsRef} className="absolute inset-0 z-10 w-full h-full pointer-events-none flex flex-col items-center pt-[12%] px-8">

@@ -3,6 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
+import { getAssetPath } from '@/lib/utils';
 
 export default function ThankYou() {
   const containerRef = useRef<HTMLElement>(null);
@@ -12,7 +13,7 @@ export default function ThankYou() {
       <div className="relative w-full max-w-[500px] min-h-screen">
         {/* Background Image - The "Frame" */}
         <img 
-          src="/section10.gif" 
+          src={getAssetPath('/section10.gif')} 
           alt="Thank You" 
           className="w-full min-h-screen object-cover block" 
         />

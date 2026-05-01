@@ -3,6 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useEffect, useRef, useState } from 'react';
+import { getAssetPath } from '@/lib/utils';
 import { FlowerShape } from './ArtAssets';
 
 interface Wish {
@@ -120,7 +121,7 @@ export default function Guestbook({ rsvpDeadline }: { rsvpDeadline: string }) {
       <div className="relative w-full max-w-[500px] min-h-screen">
         {/* Background Image */}
         <img 
-          src="/b2/bg5.JPG" 
+          src={getAssetPath('/b2/bg5.JPG')} 
           alt="Guestbook Background" 
           className="w-full min-h-screen object-cover block" 
         />

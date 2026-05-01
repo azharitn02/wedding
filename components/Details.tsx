@@ -6,6 +6,7 @@ import { useRef } from 'react';
 import Image from 'next/image';
 
 import { WeddingData } from '@/lib/data';
+import { getAssetPath } from '@/lib/utils';
 
 interface DetailsProps {
   data: WeddingData['event'];
@@ -37,7 +38,7 @@ export default function Details({ data }: DetailsProps) {
         {/* Background Image - The "Frame" */}
         <img 
           ref={bgRef}
-          src="/section7.jpeg" 
+          src={getAssetPath('/section7.jpeg')} 
           alt="Details Background" 
           className="w-full min-h-screen object-cover block" 
         />

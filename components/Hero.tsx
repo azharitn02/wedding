@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { useRef } from 'react';
 import Image from 'next/image';
 import { WeddingData } from '@/lib/data';
+import { getAssetPath } from '@/lib/utils';
 import Stamp from './Stamp';
 import { HeartIcon, StampCorner } from './ArtAssets';
 import FloralFrame from './FloralFrame';
@@ -69,7 +70,7 @@ export default function Hero({ data }: HeroProps) {
       {/* Full Screen Background Image */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <Image 
-          src="/bg.jpg" 
+          src={getAssetPath('/bg.jpg')} 
           alt="Hero background" 
           fill
           className="hero-bg object-cover object-center"

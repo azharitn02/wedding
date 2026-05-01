@@ -3,6 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef, useState, useEffect } from 'react';
+import { getAssetPath } from '@/lib/utils';
 
 export default function CountdownSection() {
   const containerRef = useRef<HTMLElement>(null);
@@ -57,7 +58,7 @@ export default function CountdownSection() {
         {/* Background Image - The "Frame" */}
         <img 
           ref={bgRef}
-          src="/bgcount1.jpg" 
+          src={getAssetPath('/bgcount1.jpg')} 
           alt="Countdown Background" 
           className="w-full h-auto block" 
         />

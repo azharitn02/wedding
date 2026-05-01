@@ -7,6 +7,7 @@ import { useRef } from 'react';
 // import Image from 'next/image';
 
 import { WeddingData } from '@/lib/data';
+import { getAssetPath } from '@/lib/utils';
 
 interface CoupleProps {
   data: WeddingData['couple'];
@@ -38,7 +39,7 @@ export default function Couple({ data }: CoupleProps) {
         {/* Background Image - The "Frame" */}
         <img 
           ref={bgRef}
-          src="/couplesbg.jpg" 
+          src={getAssetPath('/couplesbg.jpg')} 
           alt="Couple full screen" 
           className="w-full min-h-screen object-cover block" 
         />

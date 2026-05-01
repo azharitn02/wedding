@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 import { WeddingData } from '@/lib/data';
+import { getAssetPath } from '@/lib/utils';
 import FloralFrame from './FloralFrame';
 
 interface ProfilesProps {
@@ -76,7 +77,7 @@ export default function Profiles({ data }: ProfilesProps) {
       <div className="profile-section relative w-full max-w-[500px] min-h-screen">
         {/* Background Image */}
         <img 
-          src="/bg5.jpg" 
+          src={getAssetPath('/bg5.jpg')} 
           alt="Groom Background" 
           className="bg-image w-full min-h-screen object-cover block pointer-events-none" 
         />
@@ -90,7 +91,7 @@ export default function Profiles({ data }: ProfilesProps) {
           <div className="flex flex-col items-center w-full flex-1 justify-center -mt-[8%]">
             <div className="relative flex flex-col items-center text-center">
               <img 
-                src="/groomborder1.png" 
+                src={getAssetPath('/groomborder1.png')} 
                 alt="Groom Frame" 
                 className="frame-image w-full h-auto object-contain" 
               />
@@ -114,7 +115,7 @@ export default function Profiles({ data }: ProfilesProps) {
       <div className="profile-section relative w-full max-w-[500px] min-h-screen">
         {/* Background Image */}
         <img 
-          src="/bg5.jpg" 
+          src={getAssetPath('/bg5.jpg')} 
           alt="Bride Background" 
           className="bg-image w-full min-h-screen object-cover block pointer-events-none" 
         />
@@ -127,7 +128,7 @@ export default function Profiles({ data }: ProfilesProps) {
           <div className="flex flex-col items-center w-full flex-1 justify-center -mt-[8%]">
             <div className="relative flex flex-col items-center text-center">
               <img 
-                src="/brideborder1.png" 
+                src={getAssetPath('/brideborder1.png')} 
                 alt="Bride Frame" 
                 className="frame-image w-full h-auto object-contain" 
               />
