@@ -3,9 +3,6 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useEffect, useRef, useState } from 'react';
-import Stamp from './Stamp';
-
-import { WeddingData } from '@/lib/data';
 import { FlowerShape } from './ArtAssets';
 
 interface Wish {

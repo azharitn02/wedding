@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 
+export const dynamic = 'force-static';
+
 // Initialize the database table if it doesn't exist
 const initDb = async () => {
     try {
