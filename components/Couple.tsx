@@ -4,7 +4,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 // import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
-// import Image from 'next/image';
+import Image from 'next/image';
 
 import { WeddingData } from '@/lib/data';
 import { getAssetPath } from '@/lib/utils';
@@ -37,11 +37,11 @@ export default function Couple({ data }: CoupleProps) {
     <section ref={containerRef} className="w-full bg-[#E8E4DC] flex justify-center overflow-hidden">
       <div className="relative w-full max-w-[500px] min-h-screen">
         {/* Background Image - The "Frame" */}
-        <img 
-          ref={bgRef}
+        <Image 
           src={getAssetPath('/couplesbg.jpg')} 
           alt="Couple full screen" 
-          className="w-full min-h-screen object-cover block" 
+          fill
+          className="object-cover block" 
         />
 
         {/* Content Overlay - Centered in Safe Zones */}

@@ -3,6 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
+import Image from 'next/image';
 import { MapPin, Navigation } from 'lucide-react';
 import { WeddingData } from '@/lib/data';
 import { getAssetPath } from '@/lib/utils';
@@ -112,7 +113,13 @@ export default function Location({ data }: LocationProps) {
            
            {/* Decorative Stamp */}
            <div className="absolute -top-6 -right-6 w-20 h-20 z-20 transform -rotate-12 pointer-events-none opacity-90">
-              <img src={getAssetPath('/border.png')} alt="Stamp" className="w-full h-full object-contain" />
+              <Image 
+                src={getAssetPath('/border.png')} 
+                alt="Stamp" 
+                width={80}
+                height={80}
+                className="w-full h-full object-contain" 
+              />
            </div>
         </div>
       </div>

@@ -3,6 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
+import Image from 'next/image';
 import { getAssetPath } from '@/lib/utils';
 
 export default function ThankYou() {
@@ -12,10 +13,12 @@ export default function ThankYou() {
     <section ref={containerRef} className="w-full bg-[#E8E4DC] flex justify-center overflow-hidden">
       <div className="relative w-full max-w-[500px] min-h-screen">
         {/* Background Image - The "Frame" */}
-        <img 
+        <Image 
           src={getAssetPath('/section10.gif')} 
           alt="Thank You" 
-          className="w-full min-h-screen object-cover block" 
+          fill
+          className="object-cover block" 
+          unoptimized
         />
       </div>
     </section>

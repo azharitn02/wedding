@@ -3,6 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
+import Image from 'next/image';
 import { WeddingData } from '@/lib/data';
 import { getAssetPath } from '@/lib/utils';
 import FloralFrame from './FloralFrame';
@@ -76,10 +77,11 @@ export default function Profiles({ data }: ProfilesProps) {
       {/* Groom Section */}
       <div className="profile-section relative w-full max-w-[500px] min-h-screen">
         {/* Background Image */}
-        <img 
+        <Image 
           src={getAssetPath('/bg5.jpg')} 
           alt="Groom Background" 
-          className="bg-image w-full min-h-screen object-cover block pointer-events-none" 
+          fill
+          className="bg-image object-cover block pointer-events-none" 
         />
         
         <div className="absolute inset-0 z-10 w-full h-full pointer-events-none flex flex-col items-center pt-[8%]">
@@ -89,10 +91,12 @@ export default function Profiles({ data }: ProfilesProps) {
           </div>
 
           <div className="flex flex-col items-center w-full flex-1 justify-center -mt-[8%]">
-            <div className="relative flex flex-col items-center text-center">
-              <img 
+            <div className="relative flex flex-col items-center text-center w-full">
+              <Image 
                 src={getAssetPath('/groomborder1.png')} 
                 alt="Groom Frame" 
+                width={500}
+                height={700}
                 className="frame-image w-full h-auto object-contain" 
               />
               
@@ -114,10 +118,11 @@ export default function Profiles({ data }: ProfilesProps) {
       {/* Bride Section */}
       <div className="profile-section relative w-full max-w-[500px] min-h-screen">
         {/* Background Image */}
-        <img 
+        <Image 
           src={getAssetPath('/bg5.jpg')} 
           alt="Bride Background" 
-          className="bg-image w-full min-h-screen object-cover block pointer-events-none" 
+          fill
+          className="bg-image object-cover block pointer-events-none" 
         />
         <div className="absolute inset-0 z-10 w-full h-full pointer-events-none flex flex-col items-center pt-[8%]">
           <div className="stagger-content text-center mb-4">
@@ -126,10 +131,12 @@ export default function Profiles({ data }: ProfilesProps) {
           </div>
 
           <div className="flex flex-col items-center w-full flex-1 justify-center -mt-[8%]">
-            <div className="relative flex flex-col items-center text-center">
-              <img 
+            <div className="relative flex flex-col items-center text-center w-full">
+              <Image 
                 src={getAssetPath('/brideborder1.png')} 
                 alt="Bride Frame" 
+                width={500}
+                height={700}
                 className="frame-image w-full h-auto object-contain" 
               />
               

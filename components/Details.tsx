@@ -36,11 +36,11 @@ export default function Details({ data }: DetailsProps) {
     <section ref={containerRef} className="w-full bg-[#f4f1eb] flex justify-center overflow-hidden">
       <div className="relative w-full max-w-[500px] min-h-screen">
         {/* Background Image - The "Frame" */}
-        <img 
-          ref={bgRef}
+        <Image 
           src={getAssetPath('/section7.jpeg')} 
           alt="Details Background" 
-          className="w-full min-h-screen object-cover block" 
+          fill
+          className="object-cover block" 
         />
         
         {/* Overlay Content */}

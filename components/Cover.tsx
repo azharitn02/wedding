@@ -91,7 +91,14 @@ export default function Cover({ data, onOpen }: CoverProps) {
       className="w-full bg-[#E8E4DC] flex justify-center overflow-hidden"
     >
       <div className="relative w-full max-w-[500px] min-h-screen shadow-2xl">
-        <img src={getAssetPath('/bgfix.jpg')} alt="Cover Background" className="w-full min-h-screen object-cover block pointer-events-none" />
+        <Image 
+          src={getAssetPath('/bgfix.jpg')} 
+          alt="Cover Background" 
+          fill
+          className="object-cover block pointer-events-none" 
+          priority
+          sizes="500px"
+        />
         
         <div ref={elementsRef} className="absolute inset-0 z-10 w-full h-full mx-auto">
           

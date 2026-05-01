@@ -3,12 +3,12 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef, useState, useEffect } from 'react';
+import Image from 'next/image';
 import { getAssetPath } from '@/lib/utils';
 
 export default function CountdownSection() {
   const containerRef = useRef<HTMLElement>(null);
   const elementsRef = useRef<HTMLDivElement>(null);
-  const bgRef = useRef<HTMLImageElement>(null);
 
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -54,13 +54,13 @@ export default function CountdownSection() {
 
   return (
     <section ref={containerRef} className="w-full bg-[#E8E4DC] flex justify-center overflow-hidden">
-      <div className="relative w-full max-w-[500px]">
+      <div className="relative w-full max-w-[500px] aspect-[4/3]">
         {/* Background Image - The "Frame" */}
-        <img 
-          ref={bgRef}
+        <Image 
           src={getAssetPath('/bgcount1.jpg')} 
           alt="Countdown Background" 
-          className="w-full h-auto block" 
+          fill
+          className="object-cover block" 
         />
         
         {/* Content Overlay */}

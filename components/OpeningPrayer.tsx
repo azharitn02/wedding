@@ -34,10 +34,12 @@ export default function OpeningPrayer({ data }: OpeningPrayerProps) {
     <section ref={containerRef} className="w-full bg-[#E8E4DC] flex justify-center overflow-hidden">
       <div className="relative w-full max-w-[500px] min-h-screen">
         {/* Background Image - The "Frame" */}
-        <img 
+        <Image 
           src={getAssetPath('/illusbg.gif')} 
           alt="Opening Prayer Background" 
-          className="prayer-bg-img w-full min-h-screen object-cover block" 
+          fill
+          className="prayer-bg-img object-cover block" 
+          unoptimized
         />
         
         {/* Decorative center element - Providing safe contrast for text */}
