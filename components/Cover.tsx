@@ -103,7 +103,7 @@ export default function Cover({ data, onOpen }: CoverProps) {
         <div ref={elementsRef} className="absolute inset-0 z-10 w-full h-full mx-auto">
           
           {/* Bride Name */}
-          <div className="stagger-el absolute left-5 right-0 top-[29%] h-[25%] flex justify-center items-center pointer-events-none">
+          <div className="stagger-el absolute left-5 right-0 top-[25%] h-[25%] flex justify-center items-center pointer-events-none">
             <div className="relative w-full h-full mx-8">
               <Image 
                 src={getAssetPath('/bridename.gif')} 
@@ -116,7 +116,7 @@ export default function Cover({ data, onOpen }: CoverProps) {
           </div>
 
           {/* Groom Name */}
-          <div className="stagger-el absolute left-5 right-0 top-[46%] h-[25%] flex justify-center items-center pointer-events-none">
+          <div className="stagger-el absolute left-5 right-0 top-[43%] h-[25%] flex justify-center items-center pointer-events-none">
             <div className="relative w-full h-full mx-8">
               <Image 
                 src={getAssetPath('/groomname.gif')} 
