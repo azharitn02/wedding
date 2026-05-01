@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-beige: #D1C7BD;
+  --color-brand-bone: #F9F8F6;
+  --color-brand-burgundy: #800020;
+  --color-brand-mauve: #A38F8B;
+  --color-brand-espresso: #2D1E17;
+  --color-brand-gold: #C5A059;
+  
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
+  --font-mogra: var(--font-mogra);
+}
+
+:root {
+  --bg-beige: #E8E4DC;
+  --bg-bone: #F9F8F6;
+  --color-burgundy: #800020;
+  --color-espresso: #4E362A;
+  --color-gold: #C5A059;
+  --color-mauve: #A38F8B;
+}
+
+/* Premium Typography Utilities */
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-high-end {
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.text-glow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.font-premium-serif {
+  font-family: var(--font-serif), serif;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.text-shadow-safe {
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8), 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+.text-outline-premium {
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+}
+
+/* Refined Decorative Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.soft-shadow {
+  box-shadow: 0 10px 30px -10px rgba(78, 54, 42, 0.15);
+}
+
+.border-premium {
+  border: 1px solid var(--color-espresso);
+  position: relative;
+}
+
+.border-premium::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 1px solid var(--color-gold);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Custom Typography */
+.mogra-regular {
+  font-family: var(--font-mogra), "Mogra", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.font-cursive {
+  font-family: var(--font-cursive), cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+  background-color: var(--bg-beige);
+  color: var(--color-espresso);
+  overflow-x: hidden;
+}
+
+/* Scalloped edge styling */
+.scalloped-border {
+  position: relative;
+  border: 1px solid var(--color-espresso);
+}
+
+.scalloped-border::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border: 4px dotted var(--color-espresso);
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+.stamp-edge {
+  mask-image: radial-gradient(circle at 10px 10px, transparent 10px, black 11px);
+  mask-size: 20px 20px;
+  mask-repeat: repeat;
+  mask-position: -10px -10px;
+}
+
+/* Custom transitions */
+.soft-ease {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom Themed Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-bone);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-burgundy);
+  border-radius: 10px;
+  border: 1px solid var(--bg-bone);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #600018;
+}
+
+/* Fallback for Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-burgundy) var(--bg-bone);
+}
