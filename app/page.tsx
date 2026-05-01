@@ -18,6 +18,7 @@ import CoupleClosing from '@/components/CoupleClosing';
 import ThankYou from '@/components/ThankYou';
 import Footer from '@/components/Footer';
 import Cover from '@/components/Cover';
+import MusicPlayer from '@/components/MusicPlayer';
 import { weddingData } from '@/lib/data';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -63,6 +64,8 @@ export default function Home() {
           <Guestbook rsvpDeadline={weddingData.event.rsvpDeadline} />
           <CoupleClosing />
           <ThankYou />
+          {/* Background Music Player */}
+          <MusicPlayer isOpened={isOpened} />
         </main>
       )}
     </>

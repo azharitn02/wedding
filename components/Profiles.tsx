@@ -90,7 +90,7 @@ export default function Profiles({ data }: ProfilesProps) {
             <div className="w-8 h-[1px] bg-brand-gold/40 mx-auto mt-1" />
           </div>
 
-          <div className="flex flex-col items-center w-full flex-1 justify-center -mt-[8%]">
+          <div className="flex flex-col items-center w-full flex-1 justify-center -mt-[30%]">
             <div className="relative flex flex-col items-center text-center w-full">
               <Image 
                 src={getAssetPath('/groomborder1.png')} 
@@ -130,7 +130,7 @@ export default function Profiles({ data }: ProfilesProps) {
             <div className="w-8 h-[1px] bg-brand-gold/40 mx-auto mt-1" />
           </div>
 
-          <div className="flex flex-col items-center w-full flex-1 justify-center -mt-[8%]">
+          <div className="flex flex-col items-center w-full flex-1 justify-center -mt-[30%]">
             <div className="relative flex flex-col items-center text-center w-full">
               <Image 
                 src={getAssetPath('/brideborder1.png')} 
