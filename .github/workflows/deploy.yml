@@ -42,6 +42,7 @@ jobs:
           # If your repository is not at username.github.io, 
           # you might need to set a base path.
           NEXT_PUBLIC_BASE_PATH: "/wedding"
+          DATABASE_URL: "postgres://placeholder:placeholder@localhost:5432/placeholder"
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
