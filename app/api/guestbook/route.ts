@@ -4,7 +4,7 @@ import { sql } from '@/lib/db';
 // Initialize the database table if it doesn't exist
 const initDb = async () => {
     try {
-        await sql(`
+        await sql`
             CREATE TABLE IF NOT EXISTS guestbook_dhisa (
                 id SERIAL PRIMARY KEY,
                 name TEXT NOT NULL,
@@ -12,7 +12,7 @@ const initDb = async () => {
                 attending BOOLEAN DEFAULT TRUE,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             );
-        `);
+        `;
     } catch (error) {
         console.error('Error initializing database:', error);
     }
