@@ -64,10 +64,10 @@ export default function Home() {
           <Guestbook rsvpDeadline={weddingData.event.rsvpDeadline} />
           <CoupleClosing />
           <ThankYou />
-          {/* Background Music Player */}
-          <MusicPlayer isOpened={isOpened} />
         </main>
       )}
+      {/* CRITICAL: MusicPlayer must be OUTSIDE to load in the background for INSTANT play */}
+      <MusicPlayer isOpened={isOpened} />
     </>
   );
 }

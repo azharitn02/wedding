@@ -50,15 +50,14 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ isOpened }) => {
     };
   }, []);
 
+  const playerContainerRef = useRef<HTMLDivElement>(null);
+
   // Create the player when API is ready and gate is opened
   const createPlayer = useCallback(() => {
-    if (playerRef.current || !isApiReady) return;
+    if (playerRef.current || !isApiReady || !playerContainerRef.current) return;
 
-    // Ensure the container element exists
-    const container = document.getElementById('youtube-player');
-    if (!container) return;
     try {
-      playerRef.current = new (window as any).YT.Player('youtube-player', {
+      playerRef.current = new (window as any).YT.Player(playerContainerRef.current, {
         height: '0',
         width: '0',
         videoId: 'l38Aru5jICw',
@@ -213,7 +212,10 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ isOpened }) => {
 
   return (
     <>
-      <div id="youtube-player" className="hidden" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} />
+      {/* Stable container for YouTube to prevent DOM reconciliation errors */}
+      <div className="hidden" aria-hidden="true">
+        <div ref={playerContainerRef} />
+      </div>
       
       <AnimatePresence>
         {isOpened && (
@@ -225,12 +227,12 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ isOpened }) => {
             <div className="relative flex items-center gap-2">
               <button
                 onClick={togglePlay}
-                className="relative w-12 h-12 flex items-center justify-center bg-fuji-charcoal/80 backdrop-blur-md border border-white/10 rounded-full shadow-2xl group transition-all duration-500 hover:border-fuji-sage"
+                className="relative w-12 h-12 flex items-center justify-center bg-brand-espresso/80 backdrop-blur-md border border-white/10 rounded-full shadow-2xl group transition-all duration-500 hover:border-brand-gold"
                 aria-label={isPlaying ? 'Pause music' : 'Play music'}
               >
                 {/* Pulsing background effect */}
                 {isPlaying && (
-                  <span className="absolute inset-0 rounded-full bg-fuji-sage/20 animate-ping" />
+                  <span className="absolute inset-0 rounded-full bg-brand-gold/20 animate-ping" />
                 )}
                 
                 <motion.div
@@ -238,16 +240,16 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ isOpened }) => {
                   transition={isPlaying ? { repeat: Infinity, duration: 4, ease: "linear" } : { duration: 0.5 }}
                 >
                   {isPlaying ? (
-                    <Music2 className="w-5 h-5 text-fuji-sage" />
+                    <Music2 className="w-5 h-5 text-brand-gold" />
                   ) : (
-                    <Music className="w-5 h-5 text-fuji-mist" />
+                    <Music className="w-5 h-5 text-brand-bone/60" />
                   )}
                 </motion.div>
               </button>
 
               <button 
                 onClick={toggleVolumeUI}
-                className="w-8 h-8 flex items-center justify-center bg-fuji-charcoal/80 backdrop-blur-md border border-white/10 rounded-full shadow-lg text-fuji-cream/60 hover:text-fuji-sage transition-colors"
+                className="w-8 h-8 flex items-center justify-center bg-brand-espresso/80 backdrop-blur-md border border-white/10 rounded-full shadow-lg text-brand-bone/40 hover:text-brand-gold transition-colors"
                 aria-label="Volume control"
               >
                 {getVolumeIcon()}
@@ -265,7 +267,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ isOpened }) => {
                   onPointerDown={() => { if (volumeTimeoutRef.current) clearTimeout(volumeTimeoutRef.current); }}
                   onPointerUp={resetVolumeTimeout}
                   onPointerCancel={resetVolumeTimeout}
-                  className="bg-fuji-charcoal/80 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full flex items-center gap-3 overflow-hidden shadow-xl"
+                  className="bg-brand-espresso/80 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full flex items-center gap-3 overflow-hidden shadow-xl"
                 >
                   <input
                     type="range"
@@ -273,9 +275,9 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ isOpened }) => {
                     max="100"
                     value={volume}
                     onChange={handleVolumeChange}
-                    className="w-24 h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-fuji-sage touch-none group-hover:opacity-100"
+                    className="w-24 h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-brand-gold touch-none group-hover:opacity-100"
                   />
-                  <span className="font-sans text-[10px] text-fuji-cream/60 w-6 tabular-nums">
+                  <span className="font-sans text-[10px] text-brand-bone/60 w-6 tabular-nums">
                     {volume}%
                   </span>
                 </motion.div>
