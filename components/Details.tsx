@@ -26,7 +26,7 @@ export default function Details({ data }: DetailsProps) {
       ease: "power2.out",
       scrollTrigger: {
         trigger: containerRef.current,
-        start: "top 75%",
+        start: "top 25%",
         toggleActions: "play none none none",
       }
     });

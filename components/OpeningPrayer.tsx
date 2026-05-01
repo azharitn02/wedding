@@ -49,8 +49,8 @@ export default function OpeningPrayer({ data }: OpeningPrayerProps) {
         <div ref={contentRef} className="absolute inset-0 z-10 flex flex-col items-center justify-center px-8 py-12">
           <div className="w-full max-w-[340px] flex flex-col items-center space-y-8">
             <div className="stagger-el text-center">
-              <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-brand-espresso/40 block mb-2">The Blessing</span>
-              <h2 className="mogra-regular text-2xl text-brand-burgundy tracking-wide">Opening Prayer</h2>
+              {/* <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-brand-espresso/40 block mb-2">The Blessing</span> */}
+              <h2 className="mogra-regular text-2xl text-brand-burgundy tracking-wide">{data.surah}</h2>
               <div className="w-8 h-[1px] bg-brand-gold/40 mx-auto mt-2" />
             </div>
             
@@ -65,11 +65,11 @@ export default function OpeningPrayer({ data }: OpeningPrayerProps) {
                 <p className="font-premium-serif text-[#2D1E17] text-sm md:text-base leading-relaxed text-center italic font-medium">
                   &quot;{data.translation}&quot;
                 </p>
-                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-full text-center">
+                {/* <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-full text-center">
                    <p className="font-sans text-[9px] uppercase tracking-[0.4em] text-brand-espresso font-bold">
                     {data.surah}
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

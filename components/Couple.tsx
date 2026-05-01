@@ -55,7 +55,6 @@ export default function Couple({ data }: CoupleProps) {
               </h2>
             </div>
             <div className="stagger-el">
-              <div className="h-[1px] w-12 bg-brand-bone/40 mx-auto my-2" />
               <p className="font-sans text-sm md:text-base font-medium tracking-[0.3em] text-[#e8e4dc]/90 text-glow text-center uppercase">
                 April 8, 2026
               </p>
