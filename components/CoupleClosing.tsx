@@ -34,7 +34,7 @@ export default function CoupleClosing() {
       <div className="relative w-full max-w-[500px] min-h-screen shadow-2xl">
         {/* Background Image */}
         <Image 
-          src={getAssetPath('/b2/section9.JPG')} 
+          src={getAssetPath('/section9.JPG')} 
           alt="Cover Background" 
           fill
           className="object-cover block pointer-events-none"

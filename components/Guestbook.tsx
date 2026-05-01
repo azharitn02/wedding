@@ -121,7 +121,7 @@ export default function Guestbook({ rsvpDeadline }: { rsvpDeadline: string }) {
       <div className="relative w-full max-w-[500px] min-h-screen">
         {/* Background Image */}
         <img 
-          src={getAssetPath('/b2/bg5.JPG')} 
+          src={getAssetPath('/bg5.jpg')} 
           alt="Guestbook Background" 
           className="w-full min-h-screen object-cover block" 
         />
