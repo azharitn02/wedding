@@ -45,7 +45,7 @@ export default function Couple({ data }: CoupleProps) {
         />
 
         {/* Content Overlay - Centered in Safe Zones */}
-        <div ref={elementsRef} className="absolute inset-0 z-10 w-full h-full pointer-events-none flex flex-col justify-between pt-[15%] pb-[20%] px-8">
+        <div ref={elementsRef} className="absolute inset-0 z-10 w-full h-full pointer-events-none flex flex-col justify-between pt-[15%] pb-[10%] px-8">
           
           {/* Top Content */}
           <div className="flex flex-col items-center space-y-3">
@@ -65,8 +65,8 @@ export default function Couple({ data }: CoupleProps) {
           {/* Bottom Content */}
           <div className="flex flex-col items-center space-y-4">
             <div className="stagger-el">
-              <h2 className="idle-motion text-3xl md:text-5xl mogra-regular text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] tracking-wide text-center leading-tight">
-                Blueberry & <br/> Strawberry
+              <h2 className="idle-motion text-xl md:text-3xl mogra-regular text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] tracking-wide text-center leading-tight">
+                Blueberry & Strawberry
               </h2>
             </div>
             <div className="stagger-el">
