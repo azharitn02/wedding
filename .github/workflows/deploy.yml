@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: ["master"]
   workflow_dispatch:
 
 permissions:
@@ -38,7 +38,7 @@ jobs:
         env:
           # If your repository is not at username.github.io, 
           # you might need to set a base path.
-          NEXT_PUBLIC_BASE_PATH: ""
+          NEXT_PUBLIC_BASE_PATH: "/wedding"
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
