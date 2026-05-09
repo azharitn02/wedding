@@ -1,73 +1,29 @@
-'use client';
+"use client";
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRef, useState, useEffect } from 'react';
-import Hero from '@/components/Hero';
-import Couple from '@/components/Couple';
-import OpeningPrayer from '@/components/OpeningPrayer';
-import Profiles from '@/components/Profiles';
-import Location from '@/components/Location';
-import Journey from '@/components/Journey';
-import MemoryStrip from '@/components/MemoryStrip';
-import Details from '@/components/Details';
-import CountdownSection from '@/components/CountdownSection';
-import Guestbook from '@/components/Guestbook';
-import CoupleClosing from '@/components/CoupleClosing';
-import ThankYou from '@/components/ThankYou';
-import Footer from '@/components/Footer';
-import Cover from '@/components/Cover';
-import MusicPlayer from '@/components/MusicPlayer';
-import { weddingData } from '@/lib/data';
+import React, { Suspense } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { ScrollControls } from '@react-three/drei';
+import { CinematicScene } from '@/components/CinematicScene';
 
-gsap.registerPlugin(ScrollTrigger);
-
-// Global ScrollTrigger optimization for touch devices
-if (typeof window !== 'undefined') {
-  ScrollTrigger.config({
-    limitCallbacks: true,
-    ignoreMobileResize: true,
-  });
-}
-
-export default function Home() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isOpened, setIsOpened] = useState(false);
-
-  useGSAP(() => {
-    // Only init advanced scroll triggers after cover is opened
-    if (!isOpened) return;
-    ScrollTrigger.refresh();
-  }, { scope: containerRef, dependencies: [isOpened] });
-
-  // Scroll to top on load
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
+export default function App() {
   return (
-    <>
-      {!isOpened && (
-        <Cover data={weddingData.event} onOpen={() => setIsOpened(true)} />
-      )}
-      {isOpened && (
-        <main ref={containerRef} className="relative min-h-screen">
-          <Couple data={weddingData.couple} />
-          <OpeningPrayer data={weddingData.prayer} />
-          <Profiles data={weddingData.couple} />
-          <CountdownSection />
-          {/* <Location data={weddingData.event} /> */}
-          <Details data={weddingData.event} />
-          {/* <Journey data={weddingData.journey} /> */}
-          {/* <MemoryStrip data={weddingData.memories} /> */}
-          <Guestbook rsvpDeadline={weddingData.event.rsvpDeadline} />
-          <CoupleClosing />
-          <ThankYou />
-        </main>
-      )}
-      {/* CRITICAL: MusicPlayer must be OUTSIDE to load in the background for INSTANT play */}
-      <MusicPlayer isOpened={isOpened} />
-    </>
+    <div className="w-screen h-screen bg-[#0A120D] font-sans selection:bg-[#4B182B] selection:text-[#F8F3ED] text-[#F8F3ED] overflow-hidden">
+      <Canvas dpr={[1, 2]}>
+        <Suspense fallback={null}>
+          <ScrollControls pages={7} damping={0.2}>
+            <CinematicScene />
+          </ScrollControls>
+        </Suspense>
+      </Canvas>
+      {/* Subtle visual hint for scrolling at the very bottom initially */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-full flex flex-col items-center pointer-events-none animate-pulse">
+        <span className="text-xs text-white/50 tracking-[0.3em] uppercase mb-2">Scroll</span>
+        <div className="w-[1px] h-12 bg-white/30"></div>
+      </div>
+    </div>
   );
 }
