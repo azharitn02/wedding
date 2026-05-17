@@ -1,37 +1,34 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { WEDDING_CONFIG } from '../app/weddingConfig';
+import { WEDDING_CONFIG, getAssetPath } from '../app/weddingConfig';
 
 export function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   
-  const youtubeId = (WEDDING_CONFIG as any).musicYoutubeId ?? 'nSDgHBxUbVQ';
-
-  // Function to send play/pause commands to the YouTube iframe
-  const sendPlayerCommand = (func: 'playVideo' | 'pauseVideo') => {
-    if (iframeRef.current && iframeRef.current.contentWindow) {
-      try {
-        iframeRef.current.contentWindow.postMessage(
-          JSON.stringify({ event: 'command', func, args: '' }),
-          '*'
-        );
-      } catch (err) {
-        console.error('Error sending message to YouTube player:', err);
+  const handlePlay = () => {
+    if (audioRef.current) {
+      // Set start time on first play if current time is 0
+      if (audioRef.current.currentTime === 0) {
+        audioRef.current.currentTime = (WEDDING_CONFIG as any).musicStartSecond ?? 47;
       }
+      audioRef.current.play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch((err) => {
+          console.log('Autoplay prevented by browser security policy:', err);
+        });
     }
   };
 
-  const handlePlay = () => {
-    sendPlayerCommand('playVideo');
-    setIsPlaying(true);
-  };
-
   const handlePause = () => {
-    sendPlayerCommand('pauseVideo');
-    setIsPlaying(false);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
   };
 
   const togglePlay = () => {
@@ -89,13 +86,13 @@ export function MusicPlayer() {
 
   return (
     <>
-      {/* Hidden YouTube Iframe Player (Only mounts once loading hits 100%) */}
-      <iframe
-        ref={iframeRef}
-        src={`https://www.youtube.com/embed/${youtubeId}?enablejsapi=1&autoplay=0&mute=0&loop=1&playlist=${youtubeId}&controls=0&showinfo=0&rel=0&start=${(WEDDING_CONFIG as any).musicStartSecond ?? 0}`}
-        allow="autoplay"
-        className="hidden pointer-events-none w-0 h-0 border-0 opacity-0 absolute"
-        title="Background Music"
+      {/* Native HTML5 Audio Player preloaded during loading screen */}
+      <audio
+        ref={audioRef}
+        src={getAssetPath('/musicbg.mp3')}
+        loop
+        preload="auto"
+        className="hidden absolute w-0 h-0 pointer-events-none opacity-0 border-0"
       />
 
       {/* Embedded Rich CSS Animations for Vinyl & Floating Notes */}
