@@ -1,0 +1,1084 @@
+'use client';
+import React, { useRef, useLayoutEffect, useMemo, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { useFrame, useThree } from '@react-three/fiber';
+import { useScroll, useTexture, PerspectiveCamera, Html } from '@react-three/drei';
+import * as THREE from 'three';
+import { backgroundTextures, slideElementTextures, decorationTextures } from '../app/cinematicTextures';
+import { WEDDING_CONFIG } from '../app/weddingConfig';
+
+export function getSlideY(index: number, viewportHeight: number) {
+  let y = 0;
+  for (let i = 0; i < index; i++) {
+    const currentMult = (WEDDING_CONFIG.slides[i] as any).bgHeightMultiplier ?? 1.0;
+    const nextMult = (WEDDING_CONFIG.slides[i + 1] as any).bgHeightMultiplier ?? 1.0;
+    y -= viewportHeight * (currentMult / 2 + nextMult / 2);
+  }
+  return y;
+}
+
+export function getScrollDist(viewportHeight: number) {
+  const lastIndex = WEDDING_CONFIG.slides.length - 1;
+  return -getSlideY(lastIndex, viewportHeight);
+}
+
+// Layer depth constants (Z-axis position) to easily order components
+export const LAYERS = {
+  BACKGROUND: 0,
+  TEXT: 0.1,         // Base Z for text elements (slight offset to prevent z-fighting)
+  PARTICLES: 1,      // Base Z for floating particles
+  ORNAMENTS: 2,      // Base Z for floating ornaments
+};
+
+function ParallaxContent({ tex, index, multiplier, zOffset = 0, width, height }: any) {
+    const ref = useRef<THREE.Mesh>(null);
+    const scroll = useScroll();
+    const { viewport } = useThree();
+
+    useFrame(() => {
+        if (!scroll) return;
+        const t = scroll.offset;
+        const D = getScrollDist(viewport.height);
+        
+        const currentY = t * D;
+        const targetY = -getSlideY(index, viewport.height);
+        const distanceToTarget = currentY - targetY;
+
+        if (ref.current) {
+            ref.current.position.y = distanceToTarget * multiplier;
+        }
+    });
+
+    return (
+        <mesh ref={ref} position={[0, 0, zOffset]}>
+            <planeGeometry args={[width, height]} />
+            <meshBasicMaterial map={tex} transparent />
+        </mesh>
+    );
+}
+
+function ResponsiveBackground({ 
+    tex, 
+    isIntro = false,
+    bgHeightMultiplier = 1,
+    bgWidthMultiplier = 1
+}: { 
+    tex: THREE.Texture, 
+    isIntro?: boolean,
+    bgHeightMultiplier?: number,
+    bgWidthMultiplier?: number
+}) {
+    const { viewport } = useThree();
+    
+    // Safely get width and height from the texture
+    const imgObj = tex.image as any;
+    const sourceObj = tex.source as any;
+    
+    const width = imgObj?.videoWidth || imgObj?.width || sourceObj?.data?.width || 1;
+    const height = imgObj?.videoHeight || imgObj?.height || sourceObj?.data?.height || 1.5;
+    const imageAspect = width / height;
+    const viewportAspect = viewport.width / viewport.height;
+    
+    let baseWidth = 0;
+    let baseHeight = 0;
+    
+    // "cover" behavior for others
+    if (viewportAspect > imageAspect) {
+        baseWidth = viewport.width;
+        baseHeight = viewport.width / imageAspect;
+    } else {
+        baseWidth = viewport.height * imageAspect;
+        baseHeight = viewport.height;
+    }
+    
+    const meshWidth = baseWidth * bgWidthMultiplier;
+    const meshHeight = baseHeight * bgHeightMultiplier;
+    const meshAspect = meshWidth / meshHeight;
+    
+    // To prevent texture squishing/distortion, we clone the texture if scaled
+    // and adjust the repeat/offset to maintain "cover" aspect ratio.
+    const finalTex = useMemo(() => {
+        if (bgHeightMultiplier === 1 && bgWidthMultiplier === 1) {
+            return tex;
+        }
+        
+        const cloned = tex.clone();
+        
+        if (meshAspect > imageAspect) {
+            // Mesh is wider than image: crop image vertically
+            cloned.repeat.set(1, imageAspect / meshAspect);
+            cloned.offset.set(0, (1 - imageAspect / meshAspect) / 2);
+        } else {
+            // Mesh is taller than image: crop image horizontally
+            cloned.repeat.set(meshAspect / imageAspect, 1);
+            cloned.offset.set((1 - meshAspect / imageAspect) / 2, 0);
+        }
+        
+        cloned.needsUpdate = true;
+        return cloned;
+    }, [tex, bgHeightMultiplier, bgWidthMultiplier, meshAspect, imageAspect]);
+
+    return (
+        <mesh position={[0, 0, LAYERS.BACKGROUND]} scale={[meshWidth, meshHeight, 1]} renderOrder={-10}>
+            <planeGeometry />
+            <meshBasicMaterial map={finalTex} color="#ffffff" transparent={true} depthTest={false} depthWrite={false} />
+        </mesh>
+    );
+}
+
+function FloatingOrnament({ tex, baseX, baseY, baseZ, size, delay, isGold = false, layerMultiplier = 0.5 }: any) {
+    const ref = useRef<THREE.Mesh>(null);
+    const scroll = useScroll();
+    
+    // Calculate aspect ratio from texture
+    const aspect = useMemo(() => {
+        if (!tex || !tex.image) return 1;
+        const w = tex.image.width || tex.image.videoWidth || 1;
+        const h = tex.image.height || tex.image.videoHeight || 1;
+        return w / h;
+    }, [tex]);
+
+    useFrame((state) => {
+        if (!scroll) return;
+        const t = scroll.offset;
+        const D = getScrollDist(state.viewport.height) + state.viewport.height;
+
+        const targetY = baseY + t * D * layerMultiplier;
+
+        if (ref.current) {
+            ref.current.userData.y = THREE.MathUtils.lerp(ref.current.userData.y || baseY, targetY, 0.08);
+            const time = state.clock.elapsedTime;
+            ref.current.position.y = ref.current.userData.y + Math.cos(time * 0.8 + delay) * (isGold ? 0.05 : 0.15);
+            ref.current.position.x = baseX + Math.sin(time * 0.6 + delay) * (isGold ? 0.05 : 0.15);
+            ref.current.rotation.z = Math.sin(time * 0.4 + delay) * 0.05;
+        }
+    });
+
+    return (
+        <mesh ref={ref} position={[baseX, baseY, baseZ]}>
+            <planeGeometry args={[size, size / aspect]} />
+            <meshBasicMaterial map={tex} transparent />
+        </mesh>
+    );
+}
+
+function Particle({ tex, baseX, baseY, baseZ, size, speedFactor, delay }: any) {
+    const ref = useRef<THREE.Mesh>(null);
+    const scroll = useScroll();
+
+    useFrame((state) => {
+        if (!scroll) return;
+        const t = scroll.offset;
+        const D = getScrollDist(state.viewport.height) + state.viewport.height;
+        const M = 1.2 * speedFactor;
+
+        const targetY = baseY + t * D * M;
+
+        if (ref.current) {
+            ref.current.userData.y = THREE.MathUtils.lerp(ref.current.userData.y || baseY, targetY, 0.08);
+            const time = state.clock.elapsedTime * speedFactor;
+            ref.current.position.y = ref.current.userData.y + Math.cos(time + delay) * 0.2;
+            ref.current.position.x = baseX + Math.sin(time + delay) * 0.3;
+        }
+    });
+
+    return (
+        <mesh ref={ref} position={[baseX, baseY, baseZ]}>
+            <planeGeometry args={[size, size]} />
+            <meshBasicMaterial map={tex} transparent opacity={0.6} />
+        </mesh>
+    );
+}
+
+function SlideOrnament({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0, zOffset = 0 }: any) {
+    const ref = useRef<THREE.Mesh>(null);
+    const scroll = useScroll();
+    const { viewport } = useThree();
+    
+    // Calculate aspect ratio from texture
+    const aspect = useMemo(() => {
+        if (!tex || !tex.image) return 1;
+        const w = tex.image.width || tex.image.videoWidth || 1;
+        const h = tex.image.height || tex.image.videoHeight || 1;
+        return w / h;
+    }, [tex]);
+    
+    // Convert normalized coordinates (-50 to 50) to world units
+    const worldX = (x / 100) * bgW;
+    const worldY = (y / 100) * bgH;
+
+    useFrame((state) => {
+        if (ref.current && scroll) {
+            const t = scroll.offset;
+            const D = getScrollDist(viewport.height);
+            const parallaxOffset = t * D * multiplier;
+
+            const time = state.clock.elapsedTime;
+            ref.current.position.y = worldY + parallaxOffset + Math.cos(time * 0.6 + delay) * 0.05;
+            ref.current.position.x = worldX + Math.sin(time * 0.4 + delay) * 0.05;
+            ref.current.rotation.z = Math.sin(time * 0.3 + delay) * 0.02;
+        }
+    });
+
+    return (
+        <mesh ref={ref} position={[worldX, worldY, LAYERS.ORNAMENTS + zOffset]}>
+            <planeGeometry args={[size, size / aspect]} />
+            <meshBasicMaterial map={tex} transparent />
+        </mesh>
+    );
+}
+
+function SlideText({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0, zOffset = 0, animation = true }: any) {
+    const ref = useRef<THREE.Mesh>(null);
+    const scroll = useScroll();
+    const { viewport } = useThree();
+    
+    // Calculate aspect ratio from texture
+    const aspect = useMemo(() => {
+        if (!tex || !tex.image) return 1;
+        const w = tex.image.width || tex.image.videoWidth || 1;
+        const h = tex.image.height || tex.image.videoHeight || 1;
+        return w / h;
+    }, [tex]);
+    
+    // Convert normalized coordinates (-50 to 50) to world units
+    const worldX = (x / 100) * bgW;
+    const worldY = (y / 100) * bgH;
+
+    useFrame((state) => {
+        if (ref.current && scroll) {
+            const t = scroll.offset;
+            const D = getScrollDist(viewport.height);
+            const parallaxOffset = t * D * multiplier;
+
+            if (animation) {
+                const time = state.clock.elapsedTime;
+                ref.current.position.y = worldY + parallaxOffset + Math.cos(time * 0.6 + delay) * 0.05;
+                ref.current.position.x = worldX + Math.sin(time * 0.4 + delay) * 0.05;
+                ref.current.rotation.z = Math.sin(time * 0.3 + delay) * 0.02;
+            } else {
+                ref.current.position.y = worldY + parallaxOffset;
+                ref.current.position.x = worldX;
+                ref.current.rotation.z = 0;
+            }
+        }
+    });
+
+    return (
+        <mesh ref={ref} position={[worldX, worldY, LAYERS.TEXT + zOffset]}>
+            <planeGeometry args={[size, size / aspect]} />
+            <meshBasicMaterial map={tex} transparent />
+        </mesh>
+    );
+}
+
+function SlideHeartbeat({ tex, x = 0, y = 0, bgW, bgH, size, delay = 0, multiplier = 0, zOffset = 0, beatSpeed = 3, beatDelay = 0 }: any) {
+    const ref = useRef<THREE.Mesh>(null);
+    const scroll = useScroll();
+    const { viewport } = useThree();
+    
+    // Calculate aspect ratio from texture
+    const aspect = useMemo(() => {
+        if (!tex || !tex.image) return 1;
+        const w = tex.image.width || tex.image.videoWidth || 1;
+        const h = tex.image.height || tex.image.videoHeight || 1;
+        return w / h;
+    }, [tex]);
+    
+    // Convert normalized coordinates (-50 to 50) to world units
+    const worldX = (x / 100) * bgW;
+    const worldY = (y / 100) * bgH;
+
+    useFrame((state) => {
+        if (ref.current && scroll) {
+            const t = scroll.offset;
+            const D = getScrollDist(viewport.height);
+            const parallaxOffset = t * D * multiplier;
+
+            const time = state.clock.elapsedTime;
+            ref.current.position.y = worldY + parallaxOffset + Math.cos(time * 0.6 + delay) * 0.05;
+            ref.current.position.x = worldX + Math.sin(time * 0.4 + delay) * 0.05;
+            ref.current.rotation.z = Math.sin(time * 0.3 + delay) * 0.02;
+
+            // Heartbeat animation (pulse scale)
+            const beat = Math.pow(Math.sin(time * beatSpeed + beatDelay), 12) * 0.15 + Math.pow(Math.sin(time * beatSpeed + 0.3 + beatDelay), 12) * 0.05;
+            const scale = 1 + beat;
+            ref.current.scale.set(scale, scale, 1);
+        }
+    });
+
+    return (
+        <mesh ref={ref} position={[worldX, worldY, LAYERS.TEXT + zOffset]}>
+            <planeGeometry args={[size, size / aspect]} />
+            <meshBasicMaterial map={tex} transparent />
+        </mesh>
+    );
+}
+
+function SlideRotate({ tex, x = 0, y = 0, bgW, bgH, size, delay = 0, multiplier = 0, zOffset = 0, rotateSpeed = 2, rotateAmount = 0.15, pivot = "top", randomize = true }: any) {
+    const ref = useRef<THREE.Group>(null);
+    const scroll = useScroll();
+    const { viewport } = useThree();
+    
+    // Random offsets so multiple ornaments don't swing identically
+    const randomPhase = useMemo(() => Math.random() * Math.PI * 2, []);
+    const randomSpeedMod = useMemo(() => 0.8 + Math.random() * 0.4, []); // 0.8x to 1.2x
+
+    // Calculate aspect ratio from texture
+    const aspect = useMemo(() => {
+        if (!tex || !tex.image) return 1;
+        const w = tex.image.width || tex.image.videoWidth || 1;
+        const h = tex.image.height || tex.image.videoHeight || 1;
+        return w / h;
+    }, [tex]);
+    
+    const height = size / aspect;
+
+    // Convert normalized coordinates (-50 to 50) to world units
+    const worldX = (x / 100) * bgW;
+    const baseY = (y / 100) * bgH;
+
+    // Adjust pivot offset: "top" makes it swing from the top-middle like a pendulum.
+    const pivotOffsetY = pivot === "top" ? height / 2 : (pivot === "bottom" ? -height / 2 : 0);
+    const meshOffsetY = pivot === "top" ? -height / 2 : (pivot === "bottom" ? height / 2 : 0);
+    
+    const worldY = baseY + pivotOffsetY;
+
+    useFrame((state) => {
+        if (ref.current && scroll) {
+            const t = scroll.offset;
+            const D = getScrollDist(viewport.height);
+            const parallaxOffset = t * D * multiplier;
+
+            const time = state.clock.elapsedTime;
+            ref.current.position.y = worldY + parallaxOffset;
+            ref.current.position.x = worldX;
+            
+            if (randomize) {
+                // Dynamic wind-like swinging animation
+                const baseSwing = Math.sin(time * rotateSpeed * randomSpeedMod + delay + randomPhase);
+                const amplitudeMod = 0.6 + 0.4 * Math.sin(time * rotateSpeed * 0.3 + randomPhase * 2);
+                const wobble = 0.1 * Math.sin(time * rotateSpeed * 1.6 + randomPhase * 3);
+                ref.current.rotation.z = (baseSwing + wobble) * (rotateAmount * amplitudeMod);
+            } else {
+                // Standard perfect rotation
+                ref.current.rotation.z = Math.sin(time * rotateSpeed + delay) * rotateAmount;
+            }
+        }
+    });
+
+    return (
+        <group ref={ref} position={[worldX, worldY, LAYERS.TEXT + zOffset]}>
+            <mesh position={[0, meshOffsetY, 0]}>
+                <planeGeometry args={[size, height]} />
+                <meshBasicMaterial map={tex} transparent />
+            </mesh>
+        </group>
+    );
+}
+
+function SlidePicture({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0, zOffset = 0 }: any) {
+    const ref = useRef<THREE.Mesh>(null);
+    const scroll = useScroll();
+    const { viewport } = useThree();
+    
+    // Calculate aspect ratio from texture
+    const aspect = useMemo(() => {
+        if (!tex || !tex.image) return 1;
+        const w = tex.image.width || tex.image.videoWidth || 1;
+        const h = tex.image.height || tex.image.videoHeight || 1;
+        return w / h;
+    }, [tex]);
+    
+    // Convert normalized coordinates (-50 to 50) to world units
+    const worldX = (x / 100) * bgW;
+    const worldY = (y / 100) * bgH;
+
+    useFrame(() => {
+        if (ref.current && scroll) {
+            const t = scroll.offset;
+            const D = getScrollDist(viewport.height);
+            const parallaxOffset = t * D * multiplier;
+
+            ref.current.position.y = worldY + parallaxOffset;
+        }
+    });
+
+    return (
+        <mesh ref={ref} position={[worldX, worldY, LAYERS.ORNAMENTS + zOffset]}>
+            <planeGeometry args={[size, size / aspect]} />
+            <meshBasicMaterial map={tex} transparent />
+        </mesh>
+    );
+}
+
+function SlideHtml({ x = 0, y = 0, bgW, bgH, text, link, multiplier = 0, zOffset = 0, animation = "none", delay = 0, beatSpeed = 2, rotateSpeed = 2, rotateAmount = 0.1, randomize = true }: any) {
+    const ref = useRef<THREE.Group>(null);
+    const scroll = useScroll();
+    const { viewport, gl } = useThree();
+
+    const worldX = (x / 100) * bgW;
+    const worldY = (y / 100) * bgH;
+
+    // Fixed portal target ref to avoid double scrolling inside ScrollControls
+    const portalRef = useRef<HTMLElement | null>(null);
+    if (!portalRef.current && gl.domElement) {
+        portalRef.current = gl.domElement.parentElement;
+    }
+
+    // Random offsets for rotate animation
+    const randomPhase = useMemo(() => Math.random() * Math.PI * 2, []);
+    const randomSpeedMod = useMemo(() => 0.8 + Math.random() * 0.4, []); 
+
+    useFrame((state) => {
+        if (ref.current && scroll) {
+            const t = scroll.offset;
+            const D = getScrollDist(viewport.height);
+            const parallaxOffset = t * D * multiplier;
+            ref.current.position.y = worldY + parallaxOffset;
+            
+            const time = state.clock.elapsedTime;
+
+            if (animation === "heartbeat") {
+                const beat = Math.pow(Math.sin(time * beatSpeed + delay), 12) * 0.15 + Math.pow(Math.sin(time * beatSpeed + 0.3 + delay), 12) * 0.05;
+                const scale = 1 + beat;
+                ref.current.scale.set(scale, scale, 1);
+            } else if (animation === "rotate") {
+                if (randomize) {
+                    const baseSwing = Math.sin(time * rotateSpeed * randomSpeedMod + delay + randomPhase);
+                    const amplitudeMod = 0.6 + 0.4 * Math.sin(time * rotateSpeed * 0.3 + randomPhase * 2);
+                    const wobble = 0.1 * Math.sin(time * rotateSpeed * 1.6 + randomPhase * 3);
+                    ref.current.rotation.z = (baseSwing + wobble) * (rotateAmount * amplitudeMod);
+                } else {
+                    ref.current.rotation.z = Math.sin(time * rotateSpeed + delay) * rotateAmount;
+                }
+            }
+        }
+    });
+
+    return (
+        <group ref={ref} position={[worldX, worldY, LAYERS.TEXT + zOffset]}>
+            <Html center zIndexRange={[100, 0]} portal={portalRef as any}>
+                <a 
+                  href={link} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="px-6 py-2.5 text-[#F8F3ED] text-sm font-serif tracking-widest hover:bg-[#32101c] transition-colors shadow-lg whitespace-nowrap flex items-center gap-2"
+                  style={{ pointerEvents: 'auto' }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                  {text}
+                </a>
+            </Html>
+        </group>
+    );
+}
+
+function SlideForm({ x = 0, y = 0, bgW, bgH, multiplier = 0, zOffset = 0 }: any) {
+    const ref = useRef<THREE.Group>(null);
+    const scroll = useScroll();
+    const { viewport, gl } = useThree();
+
+    const worldX = (x / 100) * bgW;
+    const worldY = (y / 100) * bgH;
+
+    // Fixed portal target ref to avoid double scrolling inside ScrollControls
+    const portalRef = useRef<HTMLElement | null>(null);
+    if (!portalRef.current && gl.domElement) {
+        portalRef.current = gl.domElement.parentElement;
+    }
+
+    useFrame((state) => {
+        if (ref.current && scroll) {
+            const t = scroll.offset;
+            const D = getScrollDist(viewport.height);
+            const parallaxOffset = t * D * multiplier;
+            ref.current.position.y = worldY + parallaxOffset;
+        }
+    });
+
+    const handleSubmit = (e: any) => {
+        e.preventDefault();
+        alert("RSVP & Wishes Submitted Successfully!");
+    };
+
+    return (
+        <group ref={ref} position={[worldX, worldY, LAYERS.TEXT + zOffset]}>
+            <Html center zIndexRange={[100, 0]} portal={portalRef as any}>
+                <div 
+                    className=" p-6 rounded-2xl  shadow-2xl w-[85vw] max-w-[340px]"
+                    style={{ pointerEvents: 'auto' }}
+                >
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                        <div>
+                            <input 
+                                type="text" 
+                                placeholder="Name" 
+                                required
+                                className="w-full bg-[#F8F3ED]/10 border border-[#D4AF37]/30 rounded-lg px-4 py-2.5 text-[#F8F3ED] placeholder:text-[#F8F3ED]/50 focus:outline-none focus:border-[#D4AF37] transition-colors text-sm"
+                            />
+                        </div>
+                        <div>
+                            <select 
+                                required
+                                defaultValue=""
+                                className="w-full bg-[#1A2421] border border-[#D4AF37]/30 rounded-lg px-4 py-2.5 text-[#F8F3ED] focus:outline-none focus:border-[#D4AF37] transition-colors text-sm"
+                            >
+                                <option value="" disabled hidden>Will you attend?</option>
+                                <option value="yes">Yes, I will attend</option>
+                                <option value="no">Sorry, I can't attend</option>
+                            </select>
+                        </div>
+                        <div>
+                            <textarea 
+                                placeholder="Wishes for the couple..." 
+                                required
+                                rows={3}
+                                className="w-full bg-[#F8F3ED]/10 border border-[#D4AF37]/30 rounded-lg px-4 py-2.5 text-[#F8F3ED] placeholder:text-[#F8F3ED]/50 focus:outline-none focus:border-[#D4AF37] transition-colors resize-none text-sm"
+                            ></textarea>
+                        </div>
+                        <button 
+                            type="submit"
+                            className="w-full mt-2 text-[#F8F3ED] rounded-lg py-3 font-serif tracking-widest hover:bg-[#32101c] border border-[#D4AF37]/40 text-sm"
+                        >
+                            Submit
+                        </button>
+                    </form>
+                </div>
+            </Html>
+        </group>
+    );
+}
+
+export function CinematicScene() {
+  const scroll = useScroll();
+  const { viewport } = useThree();
+  const slidesGroup = useRef<THREE.Group>(null);
+
+  const [mounted, setMounted] = useState(false);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    setMounted(true);
+    setPortalTarget(document.body);
+  }, []);
+
+  // Flatten all slide elements and backgrounds for useTexture
+  const texturePaths = useMemo(() => [
+    ...backgroundTextures,
+    ...slideElementTextures.flat(),
+    decorationTextures.orchid,
+    decorationTextures.goldMotif,
+    decorationTextures.petal,
+    decorationTextures.custom,
+    decorationTextures.logo1,
+    decorationTextures.text11,
+    decorationTextures.text12,
+    decorationTextures.text13,
+    decorationTextures.text14,
+    decorationTextures.text15,
+    decorationTextures.bunga1,
+    decorationTextures.bunga2,
+    decorationTextures.bunga3,
+    decorationTextures.couple2,
+    decorationTextures.border2,
+    decorationTextures.text21,
+    decorationTextures.text22,
+    decorationTextures.text23,
+    decorationTextures.surah3,
+    decorationTextures.terjemah3,
+    decorationTextures.bride4,
+    decorationTextures.text41,
+    decorationTextures.text42,
+    decorationTextures.text43,
+    decorationTextures.bride5,
+    decorationTextures.text51,
+    decorationTextures.text52,
+    decorationTextures.text53,
+    decorationTextures.border6,
+    decorationTextures.text61,
+    decorationTextures.text62,
+    decorationTextures.text71,
+    decorationTextures.text72,
+    decorationTextures.text7Akad,
+    decorationTextures.text7AkadTgl,
+    decorationTextures.text7Resepsi,
+    decorationTextures.text7ResepsiTgl,
+    decorationTextures.text7Alamat,
+    decorationTextures.text7AlamatJln,
+    decorationTextures.text81,
+    decorationTextures.text82,
+    decorationTextures.palette8,
+    decorationTextures.text91,
+    decorationTextures.text92,
+    decorationTextures.text93,
+    decorationTextures.text94,
+    decorationTextures.image91,
+    decorationTextures.image92,
+    //10 & 11
+    decorationTextures.text111,
+    //12
+    decorationTextures.text121,
+    decorationTextures.text122,
+    //13
+    decorationTextures.logo131,
+  ], []);
+
+  const loadedTextures = useTexture(texturePaths);
+
+  useLayoutEffect(() => {
+    loadedTextures.forEach(tex => {
+      tex.anisotropy = 16;
+      tex.minFilter = THREE.LinearMipmapLinearFilter;
+      tex.magFilter = THREE.LinearFilter;
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.needsUpdate = true;
+    });
+  }, [loadedTextures]);
+
+  useFrame(() => {
+    if (!scroll || !slidesGroup.current) return;
+    const t = scroll.offset;
+    const D = getScrollDist(viewport.height);
+    slidesGroup.current.position.y = THREE.MathUtils.lerp(slidesGroup.current.position.y, t * D, 0.08);
+  });
+
+  // Re-map loaded textures back to their roles
+  let pointer = 0;
+  const bgTextures = loadedTextures.slice(pointer, pointer += backgroundTextures.length);
+  const elementTextures = slideElementTextures.map(group => 
+    loadedTextures.slice(pointer, pointer += group.length)
+  );
+  const [orchidTex, goldMotifTex, petalTex, customOrnamentTex, logo1Tex, text11Tex, text12Tex, text13Tex, text14Tex, text15Tex, bunga1Tex, bunga2Tex, bunga3Tex, couple2Tex, border2Tex, text21Tex, text22Tex, text23Tex, surah3Tex, terjemah3Tex, bride4Tex, text41Tex, text42Tex, text43Tex, bride5Tex, text51Tex, text52Tex, text53Tex, border6Tex, text61Tex, text62Tex, text71Tex, text72Tex, text7AkadTex, text7AkadTglTex, text7ResepsiTex, text7ResepsiTglTex, text7AlamatTex, text7AlamatJlnTex, text81Tex, text82Tex, palette8Tex, text91Tex, text92Tex, text93Tex, text94Tex, image91Tex, image92Tex, text111Tex, text121Tex, text122Tex, logo131Tex] = loadedTextures.slice(pointer);
+
+  // --- REACTIVE STATE CONFIGURATIONS FOR ELEMENT POSITIONING ---
+  const [configs, setConfigs] = useState<any>({
+    intro: [
+      { type: 'SlideText', tex: logo1Tex, x: 1, y: 18.5, sizeMult: 0.1, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlideText', tex: text11Tex, x: 1, y: 2, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlideText', tex: text12Tex, x: 1, y: 3, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlideRotate', tex: text13Tex, x: 1, y: 1.5, sizeMult: 0.26, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle" },
+      { type: 'SlideText', tex: text14Tex, x: -2, y: -4, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlideRotate', tex: text15Tex, x: 0, y: -10, sizeMult: 0.23, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 2, rotateAmount: 0.08, pivot: "middle" },
+      { type: 'SlideRotate', tex: bunga1Tex, x: -25, y: 22, sizeMult: 0.5, delay: 0, multiplier: 0.2, rotateSpeed: 1.8, rotateAmount: 0.1, pivot: "middle" },
+      { type: 'SlideRotate', tex: bunga2Tex, x: 28, y: -12.5, sizeMult: 0.5, delay: 1, multiplier: 0.25, rotateSpeed: 2, rotateAmount: 0.08, pivot: "middle" }
+    ],
+    couples: [
+      { type: 'SlidePicture', tex: border2Tex, x: 1, y: 0, sizeRaw: 4, delay: 1, multiplier: 0.02 },
+      { type: 'SlidePicture', tex: couple2Tex, x: 1, y: 1, sizeRaw: 4, delay: 1, multiplier: 0.0 },
+      { type: 'SlideRotate', tex: bunga1Tex, x: 19, y: 5, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" },
+      { type: 'SlideRotate', tex: bunga2Tex, x: 23, y: -22.5, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" },
+      { type: 'SlideRotate', tex: bunga3Tex, x: -19, y: -12, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" },
+      { type: 'SlideText', tex: text21Tex, x: 1, y: 13, sizeMult: 0.75, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlideText', tex: text22Tex, x: 1, y: 15, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlideText', tex: text23Tex, x: -1, y: -22, sizeMult: 0.8, delay: 2, multiplier: 0.12, zOffset: 2 }
+    ],
+    quote: [
+      { type: 'SlideText', tex: surah3Tex, x: -8, y: -30, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlideText', tex: terjemah3Tex, x: 8, y: -60, sizeMult: 0.58, delay: 2, multiplier: 0.12, zOffset: 2 }
+    ],
+    bride: [
+      { type: 'SlidePicture', tex: bride4Tex, x: 1, y: -27, sizeRaw: 2.5, delay: 1, multiplier: 0.1 },
+      { type: 'SlideRotate', tex: text41Tex, x: 1, y: -6, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1, rotateAmount: 0.1, pivot: "top" },
+      { type: 'SlideText', tex: text42Tex, x: 1, y: -58, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlideText', tex: text43Tex, x: 1, y: -63, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlideHtml', text: "@qonitaaf_", link: "https://www.instagram.com/qonitaaf_?igsh=MWh6cDg4eWtvZjZtcQ%3D%3D&utm_source=qr", x: 2, y: -58, sizeRaw: 0.5, delay: 1, multiplier: 0.12 }
+    ],
+    groom: [
+      { type: 'SlidePicture', tex: bride5Tex, x: 1, y: -38, sizeRaw: 2.57, delay: 1, multiplier: 0.1 },
+      { type: 'SlideRotate', tex: text51Tex, x: 1, y: -19, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1, rotateAmount: 0.1, pivot: "top" },
+      { type: 'SlideText', tex: text52Tex, x: 1, y: -75, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlideText', tex: text53Tex, x: 1, y: -80, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlideHtml', text: "@bagjamulyana_", link: "https://www.instagram.com/bagjamulyana_?igsh=bno5NjY5ang4OGFm", x: 2, y: -75, sizeRaw: 0.5, delay: 1, multiplier: 0.12 }
+    ],
+    daydate: [
+      { type: 'SlidePicture', tex: border6Tex, x: 1, y: -40, sizeRaw: 5.2, delay: 1, multiplier: 0.1 },
+      { type: 'SlideText', tex: text61Tex, x: 1, y: -49, sizeMult: 1.2, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlideHeartbeat', tex: text62Tex, x: 1, y: -49, sizeMult: 0.75, delay: 2, multiplier: 0.12, zOffset: 2, beatSpeed: 3, beatDelay: 2 }
+    ],
+    rundown: [
+      { type: 'SlidePicture', tex: text71Tex, x: 1, y: 22, sizeMult: 0.6, delay: 2, multiplier: 0, zOffset: 2 },
+      { type: 'SlidePicture', tex: text72Tex, x: 1, y: -19, sizeMult: 0.55, delay: 2, multiplier: 0, zOffset: 2 },
+      { type: 'SlideText', tex: text7AkadTex, x: 1, y: -62, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+      { type: 'SlideText', tex: text7AkadTglTex, x: 1, y: -65, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+      { type: 'SlideText', tex: text7ResepsiTex, x: 1, y: -74, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+      { type: 'SlideText', tex: text7ResepsiTglTex, x: 1, y: -84, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+      { type: 'SlideText', tex: text7AlamatTex, x: 1, y: -90, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+      { type: 'SlideText', tex: text7AlamatJlnTex, x: 1, y: -94, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+      { type: 'SlideRotate', tex: bunga1Tex, x: 27, y: -50, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" },
+      { type: 'SlideRotate', tex: bunga3Tex, x: -25, y: -75, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" }
+    ],
+    dresscode: [
+      { type: 'SlidePicture', tex: palette8Tex, x: 0, y: -65, sizeRaw: 3.2, delay: 1, multiplier: 0.1 },
+      { type: 'SlidePicture', tex: text81Tex, x: 0, y: -66, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlidePicture', tex: text82Tex, x: 1, y: -76, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 }
+    ],
+    stories: [
+      { type: 'SlideText', tex: image91Tex, x: 1, y: -80, sizeRaw: 4, delay: 1, multiplier: 0.1 },
+      { type: 'SlideText', tex: image92Tex, x: 1, y: -120, sizeRaw: 4, delay: 1, multiplier: 0.15 },
+      { type: 'SlideText', tex: text91Tex, x: 1, y: -70, sizeMult: 0.8, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlideText', tex: text92Tex, x: 20, y: -132, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlideText', tex: text93Tex, x: -12, y: -105, sizeMult: 0.7, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlideText', tex: text94Tex, x: 1, y: -120, sizeMult: 1.5, delay: 2, multiplier: 0.12, zOffset: 2 }
+    ],
+    rsvp: [
+      { type: 'SlideText', tex: text111Tex, x: -2, y: -68, sizeMult: 0.8, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlideForm', x: 1, y: -110, multiplier: 0.12, zOffset: 2 }
+    ],
+    gift: [
+      { type: 'SlidePicture', tex: text121Tex, x: 0, y: -108, sizeMult: 0.45, delay: 2, multiplier: 0.12, zOffset: 2 },
+      { type: 'SlidePicture', tex: text122Tex, x: 0, y: -110, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 }
+    ],
+    thanks: [
+      { type: 'SlidePicture', tex: logo131Tex, x: 1, y: -110, sizeRaw: 1, delay: 1, multiplier: 0.1 }
+    ]
+  });
+
+  const [activeSlideKey, setActiveSlideKey] = useState<string>("intro");
+  const [selectedElementIndex, setSelectedElementIndex] = useState<number>(0);
+  const [isMinimized, setIsMinimized] = useState<boolean>(false);
+  const [copied, setCopied] = useState<boolean>(false);
+
+  // Auto-detect active slide on scroll
+  useFrame(() => {
+    if (!scroll || !slidesGroup.current) return;
+    const currentY = -slidesGroup.current.position.y;
+    let closestIndex = 0;
+    let minDiff = Infinity;
+    for (let i = 0; i < WEDDING_CONFIG.slides.length; i++) {
+      const slideY = getSlideY(i, viewport.height);
+      const diff = Math.abs(currentY - slideY);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestIndex = i;
+      }
+    }
+    const slideKey = WEDDING_CONFIG.slides[closestIndex].id;
+    if (slideKey !== activeSlideKey) {
+      setActiveSlideKey(slideKey);
+      setSelectedElementIndex(0);
+    }
+  });
+
+  const currentElements = configs[activeSlideKey] || [];
+  const selectedElement = currentElements[selectedElementIndex] || null;
+
+  const handleUpdateCoordinate = (coord: 'x' | 'y', val: number) => {
+    setConfigs((prev: any) => {
+      const slideElements = [...prev[activeSlideKey]];
+      slideElements[selectedElementIndex] = {
+        ...slideElements[selectedElementIndex],
+        [coord]: val
+      };
+      return {
+        ...prev,
+        [activeSlideKey]: slideElements
+      };
+    });
+  };
+
+  const getCopyableConfigArray = () => {
+    const list = configs[activeSlideKey] || [];
+    const mapping: any = {
+      intro: 'introSlideConfig',
+      couples: 'couplesSlideConfig',
+      quote: 'quoteSlideConfig',
+      bride: 'brideSlideConfig',
+      groom: 'groomSlideConfig',
+      daydate: 'daydateSlideConfig',
+      rundown: 'rundownSlideConfig',
+      dresscode: 'dresscodeSlideConfig',
+      stories: 'storySlideConfig',
+      rsvp: 'rsvpSlideConfig',
+      gift: 'giftSlideConfig',
+      thanks: 'logoSlideConfig'
+    };
+    const varName = mapping[activeSlideKey] || 'slideConfig';
+
+    const lines = list.map((el: any, idx: number) => {
+      const parts = [];
+      parts.push(`type: '${el.type}'`);
+      
+      // Determine texture name dynamically
+      let texName = "tex";
+      if (activeSlideKey === "intro") {
+        const texMap = [logo1Tex, text11Tex, text12Tex, text13Tex, text14Tex, text15Tex, bunga1Tex, bunga2Tex];
+        const names = ["logo1Tex", "text11Tex", "text12Tex", "text13Tex", "text14Tex", "text15Tex", "bunga1Tex", "bunga2Tex"];
+        const found = texMap.indexOf(el.tex);
+        if (found !== -1) texName = names[found];
+      } else if (activeSlideKey === "couples") {
+        const texMap = [border2Tex, couple2Tex, bunga1Tex, bunga2Tex, bunga3Tex, text21Tex, text22Tex, text23Tex];
+        const names = ["border2Tex", "couple2Tex", "bunga1Tex", "bunga2Tex", "bunga3Tex", "text21Tex", "text22Tex", "text23Tex"];
+        const found = texMap.indexOf(el.tex);
+        if (found !== -1) texName = names[found];
+      } else if (activeSlideKey === "quote") {
+        const texMap = [surah3Tex, terjemah3Tex];
+        const names = ["surah3Tex", "terjemah3Tex"];
+        const found = texMap.indexOf(el.tex);
+        if (found !== -1) texName = names[found];
+      } else if (activeSlideKey === "bride") {
+        const texMap = [bride4Tex, text41Tex, text42Tex, text43Tex];
+        const names = ["bride4Tex", "text41Tex", "text42Tex", "text43Tex"];
+        const found = texMap.indexOf(el.tex);
+        if (found !== -1) texName = names[found];
+      } else if (activeSlideKey === "groom") {
+        const texMap = [bride5Tex, text51Tex, text52Tex, text53Tex];
+        const names = ["bride5Tex", "text51Tex", "text52Tex", "text53Tex"];
+        const found = texMap.indexOf(el.tex);
+        if (found !== -1) texName = names[found];
+      } else if (activeSlideKey === "daydate") {
+        const texMap = [border6Tex, text61Tex, text62Tex];
+        const names = ["border6Tex", "text61Tex", "text62Tex"];
+        const found = texMap.indexOf(el.tex);
+        if (found !== -1) texName = names[found];
+      } else if (activeSlideKey === "rundown") {
+        const texMap = [text71Tex, text72Tex, text7AkadTex, text7AkadTglTex, text7ResepsiTex, text7ResepsiTglTex, text7AlamatTex, text7AlamatJlnTex, bunga1Tex, bunga3Tex];
+        const names = ["text71Tex", "text72Tex", "text7AkadTex", "text7AkadTglTex", "text7ResepsiTex", "text7ResepsiTglTex", "text7AlamatTex", "text7AlamatJlnTex", "bunga1Tex", "bunga3Tex"];
+        const found = texMap.indexOf(el.tex);
+        if (found !== -1) texName = names[found];
+      } else if (activeSlideKey === "dresscode") {
+        const texMap = [palette8Tex, text81Tex, text82Tex];
+        const names = ["palette8Tex", "text81Tex", "text82Tex"];
+        const found = texMap.indexOf(el.tex);
+        if (found !== -1) texName = names[found];
+      } else if (activeSlideKey === "stories") {
+        const texMap = [image91Tex, image92Tex, text91Tex, text92Tex, text93Tex, text94Tex];
+        const names = ["image91Tex", "image92Tex", "text91Tex", "text92Tex", "text93Tex", "text94Tex"];
+        const found = texMap.indexOf(el.tex);
+        if (found !== -1) texName = names[found];
+      } else if (activeSlideKey === "rsvp") {
+        const texMap = [text111Tex];
+        const names = ["text111Tex"];
+        const found = texMap.indexOf(el.tex);
+        if (found !== -1) texName = names[found];
+      } else if (activeSlideKey === "gift") {
+        const texMap = [text121Tex, text122Tex];
+        const names = ["text121Tex", "text122Tex"];
+        const found = texMap.indexOf(el.tex);
+        if (found !== -1) texName = names[found];
+      } else if (activeSlideKey === "thanks") {
+        const texMap = [logo131Tex];
+        const names = ["logo131Tex"];
+        const found = texMap.indexOf(el.tex);
+        if (found !== -1) texName = names[found];
+      }
+
+      if (el.tex) {
+        parts.push(`tex: ${texName}`);
+      }
+      parts.push(`x: ${el.x}`);
+      parts.push(`y: ${el.y}`);
+      if (el.sizeMult !== undefined) parts.push(`sizeMult: ${el.sizeMult}`);
+      if (el.sizeRaw !== undefined) parts.push(`sizeRaw: ${el.sizeRaw}`);
+      parts.push(`delay: ${el.delay}`);
+      parts.push(`multiplier: ${el.multiplier}`);
+      if (el.zOffset !== undefined) parts.push(`zOffset: ${el.zOffset}`);
+      if (el.rotateSpeed !== undefined) parts.push(`rotateSpeed: ${el.rotateSpeed}`);
+      if (el.rotateAmount !== undefined) parts.push(`rotateAmount: ${el.rotateAmount}`);
+      if (el.pivot !== undefined) parts.push(`pivot: "${el.pivot}"`);
+      if (el.animation !== undefined) parts.push(`animation: ${el.animation}`);
+      if (el.link !== undefined) parts.push(`link: "${el.link}"`);
+      if (el.text !== undefined) parts.push(`text: "${el.text}"`);
+      return `    { ${parts.join(', ')} }`;
+    });
+
+    return `  const ${varName} = [\n${lines.join(',\n')}\n  ];`;
+  };
+
+  const handleCopy = () => {
+    if (typeof navigator !== 'undefined') {
+      navigator.clipboard.writeText(getCopyableConfigArray());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  // Synchronize editor state with global window for absolute viewport-locked layout outside Canvas
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).__wedding_editor_state__ = {
+        activeSlideKey,
+        setActiveSlideKey,
+        selectedElementIndex,
+        setSelectedElementIndex,
+        isMinimized,
+        setIsMinimized,
+        currentElements,
+        selectedElement,
+        handleUpdateCoordinate,
+        getCopyableConfigArray,
+        handleCopy,
+        copied
+      };
+      window.dispatchEvent(new CustomEvent('wedding-editor-update'));
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        delete (window as any).__wedding_editor_state__;
+      }
+    };
+  }, [
+    activeSlideKey,
+    selectedElementIndex,
+    isMinimized,
+    copied,
+    configs,
+    currentElements,
+    selectedElement
+  ]);
+
+  // Helper to dynamically render an element from the config
+  const renderSlideElement = (config: any, i: number, slideW: number, bgW: number, bgH: number) => {
+    const zOffset = config.zOffset !== undefined ? config.zOffset : (config.type.includes('Text') || config.type.includes('Rotate') ? 2 : 0);
+    const size = config.sizeRaw !== undefined ? config.sizeRaw : slideW * (config.sizeMult || 1);
+    
+    const props = { bgW, bgH, size, zOffset, ...config };
+    
+    switch (config.type) {
+      case 'SlideText': return <SlideText key={i} {...props} />;
+      case 'SlideRotate': return <SlideRotate key={i} {...props} />;
+      case 'SlideHeartbeat': return <SlideHeartbeat key={i} {...props} />;
+      case 'SlideOrnament': return <SlideOrnament key={i} {...props} />;
+      case 'SlidePicture': return <SlidePicture key={i} {...props} />;
+      case 'SlideHtml': return <SlideHtml key={i} {...props} />;
+      case 'SlideForm': return <SlideForm key={i} {...props} />;
+      default: return null;
+    }
+  };
+  // ----------------------------------------
+
+  return (
+    <>
+      <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={50} />
+
+      <group ref={slidesGroup}>
+        {WEDDING_CONFIG.slides.map((slide, index) => {
+          const tex = bgTextures[index];
+          const isIntro = index === 0;
+          
+          const imgObj = tex.image as any;
+          const sourceObj = tex.source as any;
+          const bgImgW = imgObj?.videoWidth || imgObj?.width || sourceObj?.data?.width || 1;
+          const bgImgH = imgObj?.videoHeight || imgObj?.height || sourceObj?.data?.height || 1.5;
+          const imageAspect = bgImgW / bgImgH;
+          const viewportAspect = viewport.width / viewport.height;
+          
+          const bgWidthMultiplier = (slide as any).bgWidthMultiplier ?? 1;
+          const bgHeightMultiplier = (slide as any).bgHeightMultiplier ?? 1;
+
+          let bgW, bgH;
+          if (viewportAspect > imageAspect) {
+              bgW = viewport.width;
+              bgH = viewport.width / imageAspect;
+          } else {
+              bgW = viewport.height * imageAspect;
+              bgH = viewport.height;
+          }
+
+          bgW = bgW * bgWidthMultiplier;
+          bgH = bgH * bgHeightMultiplier;
+
+          // Use background width for sizing to keep elements locked to background
+          const slideW = Math.min(viewport.width * 0.9, 12);
+          const slideH = slideW * (800 / 1200);
+
+          return (
+            <group key={slide.id} position={[0, getSlideY(index, viewport.height), 0]}>
+              <ResponsiveBackground 
+                tex={bgTextures[index]} 
+                isIntro={isIntro} 
+                bgWidthMultiplier={bgWidthMultiplier}
+                bgHeightMultiplier={bgHeightMultiplier}
+              />
+              {slide.elements.map((el:any, elIdx:any) => (
+                <ParallaxContent 
+                  key={elIdx}
+                  tex={elementTextures[index][elIdx]}
+                  index={index}
+                  multiplier={el.multiplier || 0}
+                  zOffset={LAYERS.TEXT + (elIdx * 0.01)}
+                  width={slideW}
+                  height={slideH}
+                />
+              ))}
+              {slide.id === "intro" && (
+                <>
+                  {configs.intro.map((config: any, i: number) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                </>
+              )}
+              {slide.id === "couples" && (
+                <>
+                  {configs.couples.map((config: any, i: number) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                </>
+              )}
+              {slide.id === "quote" && (
+                <>
+                  {configs.quote.map((config: any, i: number) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                </>
+              )}
+              {slide.id === "bride" && (
+                <>
+                  {configs.bride.map((config: any, i: number) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                </>
+              )}
+              {slide.id === "groom" && (
+                <>
+                  {configs.groom.map((config: any, i: number) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                </>
+              )}
+              {slide.id === "daydate" && (
+                <>
+                  {configs.daydate.map((config: any, i: number) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                </>
+              )}
+              {slide.id === "rundown" && (
+                <>
+                  {configs.rundown.map((config: any, i: number) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                </>
+              )}
+              {slide.id === "dresscode" && (
+                <>
+                  {configs.dresscode.map((config: any, i: number) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                </>
+              )}
+              {slide.id === "stories" && (
+                <>
+                  {configs.stories.map((config: any, i: number) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                </>
+              )}
+              {slide.id === "rsvp" && (
+                <>
+                  {configs.rsvp.map((config: any, i: number) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                </>
+              )}
+              {slide.id === "gift" && (
+                <>
+                  {configs.gift.map((config: any, i: number) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                </>
+              )}
+              {slide.id === "thanks" && (
+                <>
+                  {configs.thanks.map((config: any, i: number) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                </>
+              )}
+            </group>
+          );
+        })}
+      </group>
+
+
+
+      {/* {Array.from({ length: WEDDING_CONFIG.decorations.particleCount }).map((_, i) => (
+         <Particle 
+           key={i}
+           tex={petalTex} 
+           baseX={(Math.random() - 0.5) * viewport.width * 2} 
+           baseY={(Math.random() * 0.5 - 7.5) * viewport.height}
+           baseZ={LAYERS.PARTICLES + Math.random() * 4} 
+           size={0.1 + Math.random() * 0.3} 
+           speedFactor={1 + Math.random() * 0.8} 
+           delay={i * 1.5} 
+         />
+      ))} */}
+    </>
+  );
+}

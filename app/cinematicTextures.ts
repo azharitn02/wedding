@@ -37,5 +37,65 @@ export const decorationTextures = {
     </defs>
   </svg>`),
 
-  custom: WEDDING_CONFIG.decorations.assets.custom.url
+  custom: WEDDING_CONFIG.decorations.assets.custom.url,
+  bunga1: "/Bunga1.png",
+  bunga2: "/Bunga2.png",
+  bunga3: "/Bunga3.png",
+  //slides1
+  logo1 : "/background/logo.png",
+  text11: "/slide1/Tulisan1.png",
+  text12: "/slide1/Tulisan2.png",
+  text13: "/slide1/Tulisan3.png",
+  text14: "/slide1/Tulisan4.png",
+  text15: "/slide1/Tulisan5.png",
+  //slides2
+  text21: "/slide2/Tulisan1.png",
+  text22: "/slide2/Tulisan2.png",
+  text23: "/slide2/Tulisan3.png",
+  border2: "/slide2/border.png",
+  couple2: "/slide2/couple.png",
+  //slides3
+  surah3: "/slide3/surah.png",
+  terjemah3: "/slide3/terjemah.png",
+  //slides4
+  bride4: "slide4/IMG_0823.PNG",
+  text41: "slide4/Tulisan1.png",
+  text42: "slide4/Tulisan2.png",
+  text43: "slide4/Tulisan3.png",
+  //slides5
+  bride5: "slide5/IMG_0824.PNG",
+  text51: "slide5/Tulisan1.png",
+  text52: "slide5/Tulisan2.png",
+  text53: "slide5/Tulisan3.png",
+  //slides6
+  border6: "slide6/border.png",
+  text61: "slide6/Tulisan1.png",
+  text62: "slide6/Tulisan2.png",
+  //slides7
+  text71: "slide7/Tulisan1.png",
+  text72: "slide7/Tulisan2.png",
+  text7Akad: "slide7/1akad nikah/Tulisan1.png",
+  text7AkadTgl: "slide7/1akad nikah/Tulisan2.png",
+  text7Resepsi: "slide7/2resepsi/Tulisan1.png",
+  text7ResepsiTgl: "slide7/2resepsi/Tulisan2.png",
+  text7Alamat: "slide7/3Alamat/Tulisan1.png",
+  text7AlamatJln: "slide7/3Alamat/Tulisan2.png",
+  //slides8
+  text81: "slide8/Tulisan1.png",
+  text82: "slide8/Tulisan2.png",
+  palette8: "slide8/IMG_0836.PNG",
+  //slides9
+  text91: "slide9/Tulisan1.png",
+  text92: "slide9/Tulisan2.png",
+  text93: "slide9/Tulisan3.png",
+  text94: "slide9/Tulisan4.png",
+  image91: "slide9/image1.png",
+  image92: "slide9/image2.png",
+  //slides10
+  text111: "slide11/Tulisan1.png",
+  //slides12
+  text121: "slide12/Tulisan1.png",
+  text122: "slide12/Tulisan2.png",
+  //slides13
+  logo131: "slide13/logo.png",
 };
