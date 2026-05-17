@@ -96,6 +96,7 @@ const rawDecorationTextures = {
   //slides12
   text121: "slide12/Tulisan1.png",
   text122: "slide12/Tulisan2.png",
+  border12: "slide12/border.png",
   //slides13
   logo131: "slide13/logo.png",
 };

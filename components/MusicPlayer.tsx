@@ -87,7 +87,7 @@ export function MusicPlayer() {
       {/* Native HTML5 Audio Player preloaded during loading screen */}
       <audio
         ref={audioRef}
-        src={getAssetPath('/musicbg.mp3')}
+        src={getAssetPath('/musicbgScript.mp3')}
         loop
         preload="auto"
         onPlaying={() => {
@@ -129,7 +129,7 @@ export function MusicPlayer() {
       `}</style>
 
       {/* Floating Controller Button */}
-      <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-center">
+      <div className="fixed bottom-6 right-7 z-[9999] flex flex-col items-center">
         <button
           onClick={togglePlay}
           className="relative w-12 h-12 flex items-center justify-center bg-[#0A120D]/75 hover:bg-[#32101c]/90 border border-[#D4AF37]/35 hover:border-[#D4AF37] rounded-full shadow-2xl transition-all duration-300 group cursor-pointer backdrop-blur-md select-none active:scale-95"
@@ -174,7 +174,7 @@ export function MusicPlayer() {
         {/* Pulse Hint (Disappears once playing starts or user interacts) */}
         {!isPlaying && !hasInteracted && (
           <div className="absolute bottom-14 bg-[#32101c]/80 border border-[#D4AF37]/30 px-3 py-1 rounded text-[9px] text-[#D4AF37] font-serif tracking-widest uppercase whitespace-nowrap animate-pulse shadow-md pointer-events-none">
-            Tap to Play Music
+            Tap to Play
           </div>
         )}
       </div>

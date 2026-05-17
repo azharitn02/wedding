@@ -432,6 +432,84 @@ function SlideHtml({ x = 0, y = 0, bgW, bgH, text, link, multiplier = 0, zOffset
     );
 }
 
+function SlideCopyButton({ x = 0, y = 0, bgW, bgH, text, copyText, multiplier = 0, zOffset = 0 }: any) {
+    const ref = useRef<THREE.Group>(null);
+    const scroll = useScroll();
+    const { viewport, gl } = useThree();
+    const [copied, setCopied] = useState(false);
+
+    const worldX = (x / 100) * bgW;
+    const worldY = (y / 100) * bgH;
+
+    const portalRef = useRef<HTMLElement | null>(null);
+    if (!portalRef.current && gl.domElement) {
+        portalRef.current = gl.domElement.parentElement;
+    }
+
+    useFrame(() => {
+        if (!ref.current || !scroll) return;
+        if (ref.current.parent && !ref.current.parent.visible) return;
+        const t = scroll.offset;
+        const D = getScrollDist(viewport.height);
+        const parallaxOffset = t * D * multiplier;
+        ref.current.position.y = worldY + parallaxOffset;
+    });
+
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(copyText);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch {
+            const ta = document.createElement('textarea');
+            ta.value = copyText;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        }
+    };
+
+    return (
+        <group ref={ref} position={[worldX, worldY, LAYERS.TEXT + zOffset]}>
+            <Html center zIndexRange={[100, 0]} portal={portalRef as any}>
+                <button
+                  onClick={handleCopy}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 active:scale-95 cursor-pointer group"
+                  style={{ pointerEvents: 'auto' }}
+                >
+                  {/* <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="5" width="20" height="14" rx="2"/>
+                    <line x1="2" y1="10" x2="22" y2="10"/>
+                  </svg> */}
+                  <span className="text-[#F8F3ED] text-[11px] font-serif tracking-wider whitespace-nowrap">
+                    Copy
+                  </span>
+                  {copied ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-60 group-hover:opacity-100 transition-opacity">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                  )}
+                </button>
+                {copied && (
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#0A120D]/90 border border-[#4ade80]/40 text-[#4ade80] text-[9px] font-serif tracking-widest uppercase px-3 py-1 rounded whitespace-nowrap animate-pulse">
+                    Copied!
+                  </div>
+                )}
+            </Html>
+        </group>
+    );
+}
+
 function SlideForm({ x = 0, y = 0, bgW, bgH, multiplier = 0, zOffset = 0 }: any) {
     const ref = useRef<THREE.Group>(null);
     const scroll = useScroll();
@@ -792,6 +870,7 @@ export function CinematicScene() {
     //12
     decorationTextures.text121,
     decorationTextures.text122,
+    decorationTextures.border12,
     //13
     decorationTextures.logo131,
   ], []);
@@ -1038,7 +1117,7 @@ export function CinematicScene() {
   const elementTextures = slideElementTextures.map(group => 
     loadedTextures.slice(pointer, pointer += group.length)
   );
-  const [orchidTex, goldMotifTex, petalTex, customOrnamentTex, logo1Tex, text11Tex, text12Tex, text13Tex, text14Tex, text15Tex, bunga1Tex, bunga2Tex, bunga3Tex, couple2Tex, border2Tex, text21Tex, text22Tex, text23Tex, surah3Tex, terjemah3Tex, bride4Tex, text41Tex, text42Tex, text43Tex, bride5Tex, text51Tex, text52Tex, text53Tex, border6Tex, text61Tex, text62Tex, text71Tex, text72Tex, text7AkadTex, text7AkadTglTex, text7ResepsiTex, text7ResepsiTglTex, text7AlamatTex, text7AlamatJlnTex, text81Tex, text82Tex, palette8Tex, text91Tex, text92Tex, text93Tex, text94Tex, image91Tex, image92Tex, text111Tex, text121Tex, text122Tex, logo131Tex] = loadedTextures.slice(pointer);
+  const [orchidTex, goldMotifTex, petalTex, customOrnamentTex, logo1Tex, text11Tex, text12Tex, text13Tex, text14Tex, text15Tex, bunga1Tex, bunga2Tex, bunga3Tex, couple2Tex, border2Tex, text21Tex, text22Tex, text23Tex, surah3Tex, terjemah3Tex, bride4Tex, text41Tex, text42Tex, text43Tex, bride5Tex, text51Tex, text52Tex, text53Tex, border6Tex, text61Tex, text62Tex, text71Tex, text72Tex, text7AkadTex, text7AkadTglTex, text7ResepsiTex, text7ResepsiTglTex, text7AlamatTex, text7AlamatJlnTex, text81Tex, text82Tex, palette8Tex, text91Tex, text92Tex, text93Tex, text94Tex, image91Tex, image92Tex, text111Tex, text121Tex, text122Tex, border12Tex, logo131Tex] = loadedTextures.slice(pointer);
 
   // --- CONFIGURATION FOR SLIDE ELEMENTS ---
   // Edit these arrays to easily add, remove, or modify elements on each slide!
@@ -1050,18 +1129,18 @@ export function CinematicScene() {
     { type: 'SlideText', tex: text14Tex, x: -2, y: -4, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 },
     { type: 'SlideRotate', tex: text15Tex, x: 0, y: -10, sizeMult: 0.23, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 2, rotateAmount: 0.08, pivot: "middle" },
     { type: 'SlideRotate', tex: bunga1Tex, x: -25, y: 22, sizeMult: 0.5, delay: 0, multiplier: 0.2,rotateSpeed: 1.8, rotateAmount: 0.1, pivot: "middle" },
-    { type: 'SlideRotate', tex: bunga2Tex, x: 28, y: -12.5, sizeMult: 0.5, delay: 1, multiplier: 0.25, rotateSpeed: 2, rotateAmount: 0.08, pivot: "middle" },
+    { type: 'SlideRotate', tex: bunga2Tex, x: 24, y: -12.5, sizeMult: 0.5, delay: 1, multiplier: 0.25, rotateSpeed: 2, rotateAmount: 0.08, pivot: "middle" },
   ];
 
   const couplesSlideConfig = [
-    { type: 'SlidePicture', tex: border2Tex, x: 1, y: 0, sizeRaw: 4, delay: 1, multiplier: 0.02 },
-    { type: 'SlidePicture', tex: couple2Tex, x: 1, y: 1, sizeRaw: 4, delay: 1, multiplier: 0.0 },
-    { type: 'SlideRotate', tex: bunga1Tex, x: 19, y: 5, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle"  },
-    { type: 'SlideRotate', tex: bunga2Tex, x: 23, y: -22.5, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" },
-    { type: 'SlideRotate', tex: bunga3Tex, x: -19, y: -12, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" },
-    { type: 'SlideText', tex: text21Tex, x: 1, y: 13, sizeMult: 0.75, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text22Tex, x: 1, y: 15, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text23Tex, x: -1, y: -22, sizeMult: 0.80, delay: 2, multiplier: 0.12, zOffset: 2},
+    { type: 'SlidePicture', tex: border2Tex, x: 1, y: -2, sizeRaw: 4, delay: 1, multiplier: 0.02 },
+    { type: 'SlidePicture', tex: couple2Tex, x: 1, y: -1, sizeRaw: 4, delay: 1, multiplier: 0.0 },
+    { type: 'SlideRotate', tex: bunga1Tex, x: 21, y: 3, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle"  },
+    { type: 'SlideRotate', tex: bunga2Tex, x: 23, y: -24.5, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle" },
+    { type: 'SlideRotate', tex: bunga3Tex, x: -19, y: -14, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle" },
+    { type: 'SlideText', tex: text21Tex, x: 1, y: 10, sizeMult: 0.85, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text22Tex, x: 1, y: 11, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text23Tex, x: -1, y: -24, sizeMult: 1, delay: 2, multiplier: 0.12, zOffset: 2},
   ];
 
   const quoteSlideConfig = [
@@ -1077,7 +1156,7 @@ export function CinematicScene() {
     { type: 'SlideHtml', x: 2, y: -58, sizeRaw: 0.5, delay: 1, multiplier: 0.12, link: "https://www.instagram.com/qonitaaf_?igsh=MWh6cDg4eWtvZjZtcQ%3D%3D&utm_source=qr", text: "@qonitaaf_" }
   ];
 
-    const groomSlideConfig = [
+  const groomSlideConfig = [
     { type: 'SlidePicture', tex: bride5Tex, x: 1, y: -35.5, sizeRaw: 2.57, delay: 1, multiplier: 0.1 },
     { type: 'SlideRotate', tex: text51Tex, x: 1, y: -14, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1, rotateAmount: 0.1, pivot: "top" },
     { type: 'SlideText', tex: text52Tex, x: 1, y: -73.5, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
@@ -1085,13 +1164,13 @@ export function CinematicScene() {
     { type: 'SlideHtml', x: 2, y: -75, sizeRaw: 0.5, delay: 1, multiplier: 0.12, link: "https://www.instagram.com/bagjamulyana_?igsh=bno5NjY5ang4OGFm", text: "@bagjamulyana_" }
   ];
 
-    const daydateSlideConfig = [
+  const daydateSlideConfig = [
     { type: 'SlidePicture', tex: border6Tex, x: 1, y: -85.5, sizeRaw: 5.2, delay: 1, multiplier: 0.1 },
     { type: 'SlideText', tex: text61Tex, x: 1, y: -102, sizeMult: 1.2, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideHeartbeat', tex: text62Tex, x: 1, y: -100, sizeMult: 0.75, delay: 2, multiplier: 0.12, zOffset: 2 }
+    { type: 'SlideHeartbeat', tex: text62Tex, x: 1, y: -101.5, sizeMult: 0.75, delay: 2, multiplier: 0.12, zOffset: 2 }
   ];
 
-    const rundownSlideConfig = [
+  const rundownSlideConfig = [
     { type: 'SlidePicture', tex: text71Tex, x: 1, y: 22, sizeMult: 0.6, delay: 2, multiplier: 0, zOffset: 2 },
     { type: 'SlidePicture', tex: text72Tex, x: 1, y: -19, sizeMult: 0.55, delay: 2, multiplier: 0, zOffset: 2 },
     { type: 'SlideText', tex: text7AkadTex, x: 0, y: -50, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
@@ -1102,22 +1181,22 @@ export function CinematicScene() {
     { type: 'SlideText', tex: text7AlamatJlnTex, x: 1, y: -81.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false, link: "https://maps.app.goo.gl/KFAq19GNW1pxqRPc8" },
     { type: 'SlideHtml', x: 1, y: -90.5, sizeRaw: 0.2, delay: 1, multiplier: 0.12, link: "https://maps.app.goo.gl/KFAq19GNW1pxqRPc8", text: "Open Maps" },
     { type: 'SlideRotate', tex: bunga1Tex, x: 27, y: -38.5, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" },
-    { type: 'SlideRotate', tex: bunga3Tex, x: -25, y: -59, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" }
+    { type: 'SlideRotate', tex: bunga3Tex, x: -27, y: -59, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" }
   ];
 
   const dresscodeSlideConfig = [
-    { type: 'SlidePicture', tex: palette8Tex, x: 0, y: -136, sizeRaw: 3.2, delay: 1, multiplier: 0.1 },
-    { type: 'SlidePicture', tex: text81Tex, x: 0, y: -122, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlidePicture', tex: text82Tex, x: 1, y: -146, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 }
+    { type: 'SlidePicture', tex: palette8Tex, x: 0, y: -142, sizeRaw: 3.5, delay: 1, multiplier: 0.1 },
+    { type: 'SlidePicture', tex: text81Tex, x: 0, y: -124, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlidePicture', tex: text82Tex, x: 1, y: -150, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 }
   ];
 
   const storySlideConfig = [
-    { type: 'SlideText', tex: image91Tex, x: 1, y: -61.5, sizeRaw: 4, delay: 1, multiplier: 0.1 },
-    { type: 'SlideText', tex: image92Tex, x: 1, y: -93, sizeRaw: 4, delay: 1, multiplier: 0.15 },
-    { type: 'SlideText', tex: text91Tex, x: 1, y: -50.5, sizeMult: 0.8, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text92Tex, x: 20, y: -111.5, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text93Tex, x: -12, y: -83.5, sizeMult: 0.7, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text94Tex, x: 1, y: -98.5, sizeMult: 1.5, delay: 2, multiplier: 0.12, zOffset: 2 }
+    { type: 'SlideText', tex: image91Tex, x: 1, y: -66.5, sizeRaw: 4, delay: 1, multiplier: 0.1 },
+    { type: 'SlideText', tex: image92Tex, x: 1, y: -99.3, sizeRaw: 4, delay: 1, multiplier: 0.15 },
+    { type: 'SlideText', tex: text91Tex, x: 1, y: -55.5, sizeMult: 0.8, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text92Tex, x: 20, y: -116.5, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text93Tex, x: -12, y: -88.5, sizeMult: 0.7, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text94Tex, x: 1, y: -103.5, sizeMult: 1.5, delay: 2, multiplier: 0.12, zOffset: 2 }
   ];
 
   const rsvpSlideConfig = [
@@ -1126,8 +1205,10 @@ export function CinematicScene() {
   ];
 
   const giftSlideConfig = [
+    { type: 'SlidePicture', tex: border12Tex, x: 0, y: -198.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
     { type: 'SlidePicture', tex: text121Tex, x: 0, y: -198.5, sizeMult: 0.45, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlidePicture', tex: text122Tex, x: 0, y: -200, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 }
+    { type: 'SlidePicture', tex: text122Tex, x: 0, y: -200, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideCopyButton', x: 0, y: -214, multiplier: 0.12, zOffset: 2, copyText: '1832595092' }
   ];
 
   const logoSlideConfig = [
@@ -1148,6 +1229,7 @@ export function CinematicScene() {
       case 'SlideOrnament': return <SlideOrnament key={i} {...props} />;
       case 'SlidePicture': return <SlidePicture key={i} {...props} />;
       case 'SlideHtml': return <SlideHtml key={i} {...props} />;
+      case 'SlideCopyButton': return <SlideCopyButton key={i} {...props} />;
       case 'SlideForm': return <SlideForm key={i} {...props} />;
       default: return null;
     }

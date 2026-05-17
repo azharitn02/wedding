@@ -8,8 +8,7 @@ export const WEDDING_CONFIG = {
   pages: 12,
   scrollMode: "strict", // "strict" (page-by-page lock) or "smooth" (momentum-based snap)
   transitionSpeed: 0.5, // Slide transition speed. Lower values (e.g. 0.1) are faster, higher values (e.g. 0.4) are slower.
-  musicYoutubeId: "l38Aru5jICw", // YouTube Video ID for background music (Piano cover)
-  musicStartSecond: 47, // Start background music at this second
+  musicStartSecond: 0, // Start background music at this second
   colors: {
     text: "#F8F3ED",
     text2: "#4B182B",
@@ -128,9 +127,9 @@ export const WEDDING_CONFIG = {
     },
     {
       id: "gift",
-      background: "/background/08&11 dresscode dan gift.JPG",
+      background: "/background/09 Kata kata.JPG",
       bgHeightMultiplier: 0.5, // Adjust height of the background (e.g., 0.8 to shrink, 1.2 to stretch vertically)
-      bgWidthMultiplier: 0.75,  // Adjust width of the background (e.g., 0.8 to shrink, 1.2 to stretch horizontally)
+      bgWidthMultiplier: 1,  // Adjust width of the background (e.g., 0.8 to shrink, 1.2 to stretch horizontally)
       elements: [
       ]
     },
