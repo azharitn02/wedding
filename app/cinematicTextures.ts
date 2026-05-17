@@ -1,16 +1,16 @@
 import { generateElementSvg, createSvgTexture } from './svgTextures';
-import { WEDDING_CONFIG } from './weddingConfig';
+import { WEDDING_CONFIG, getAssetPath } from './weddingConfig';
 
 // Backgrounds
-export const backgroundTextures = WEDDING_CONFIG.slides.map(s => s.background);
+export const backgroundTextures = WEDDING_CONFIG.slides.map(s => getAssetPath(s.background));
 
 // Slide Elements
 export const slideElementTextures = WEDDING_CONFIG.slides.map(slide => 
   slide.elements.map(el => generateElementSvg(el))
 );
 
-// Decorative Textures
-export const decorationTextures = {
+// Decorative Textures (Raw definitions)
+const rawDecorationTextures = {
   orchid: createSvgTexture(`<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
     <path d="M200,200 Q250,80 320,120 Q380,250 200,200 Z" fill="#F8F3ED" opacity="0.95"/>
     <path d="M200,200 Q150,80 80,120 Q20,250 200,200 Z" fill="#F1EBE4" opacity="0.95"/>
@@ -68,7 +68,7 @@ export const decorationTextures = {
   text52: "slide5/Tulisan2.png",
   text53: "slide5/Tulisan3.png",
   //slides6
-  border6: "slide6/border.png",
+  border6: "slide6/border.PNG",
   text61: "slide6/Tulisan1.png",
   text62: "slide6/Tulisan2.png",
   //slides7
@@ -89,8 +89,8 @@ export const decorationTextures = {
   text92: "slide9/Tulisan2.png",
   text93: "slide9/Tulisan3.png",
   text94: "slide9/Tulisan4.png",
-  image91: "slide9/image1.png",
-  image92: "slide9/image2.png",
+  image91: "slide9/image1.PNG",
+  image92: "slide9/image2.PNG",
   //slides10
   text111: "slide11/Tulisan1.png",
   //slides12
@@ -99,3 +99,15 @@ export const decorationTextures = {
   //slides13
   logo131: "slide13/logo.png",
 };
+
+// Process paths automatically with getAssetPath
+export const decorationTextures = (() => {
+  const processed = { ...rawDecorationTextures } as any;
+  for (const key in processed) {
+    const val = processed[key];
+    if (typeof val === 'string' && !val.trim().startsWith('<svg')) {
+      processed[key] = getAssetPath(val);
+    }
+  }
+  return processed as typeof rawDecorationTextures;
+})();

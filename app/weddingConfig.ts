@@ -157,3 +157,19 @@ export const WEDDING_CONFIG = {
     }
   }
 };
+
+export const getAssetPath = (path: string): string => {
+  if (!path) return '';
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+  
+  // Normalize the path so it starts with a leading slash if it's local
+  let normalizedPath = path;
+  if (!path.startsWith('/') && !path.startsWith('http') && !path.startsWith('data:')) {
+    normalizedPath = '/' + path;
+  }
+  
+  if (basePath && normalizedPath.startsWith('/') && !normalizedPath.startsWith(basePath)) {
+    return `${basePath}${normalizedPath}`;
+  }
+  return normalizedPath;
+};

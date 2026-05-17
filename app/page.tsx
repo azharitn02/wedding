@@ -8,7 +8,7 @@ import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { ScrollControls } from '@react-three/drei';
 import { CinematicScene, getScrollDist } from '@/components/CinematicScene';
-import { WEDDING_CONFIG } from '@/app/weddingConfig';
+import { WEDDING_CONFIG, getAssetPath } from '@/app/weddingConfig';
 import { MusicPlayer } from '@/components/MusicPlayer';
 import { LoadingScreen } from '@/components/LoadingScreen';
 
@@ -19,7 +19,7 @@ export default function App() {
     <div 
       className="w-screen h-screen bg-[#0A120D] font-sans selection:bg-[#4B182B] selection:text-[#F8F3ED] text-[#F8F3ED] overflow-hidden"
       style={{
-        backgroundImage: "url('/background/01_cover.jpg')",
+        backgroundImage: `url('${getAssetPath('/background/01_cover.jpg')}')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
