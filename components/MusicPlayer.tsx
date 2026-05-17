@@ -7,15 +7,11 @@ export function MusicPlayer() {
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const startTimeSet = useRef(false);
+  const needsSeek = useRef(true);
+  const startSecond = (WEDDING_CONFIG as any).musicStartSecond ?? 47;
   
   const handlePlay = () => {
     if (audioRef.current) {
-      // Set start time on first play if not already set
-      if (!startTimeSet.current) {
-        audioRef.current.currentTime = (WEDDING_CONFIG as any).musicStartSecond ?? 47;
-        startTimeSet.current = true;
-      }
       audioRef.current.play()
         .then(() => {
           setIsPlaying(true);
@@ -94,10 +90,11 @@ export function MusicPlayer() {
         src={getAssetPath('/musicbg.mp3')}
         loop
         preload="auto"
-        onLoadedMetadata={() => {
-          if (audioRef.current && !startTimeSet.current) {
-            audioRef.current.currentTime = (WEDDING_CONFIG as any).musicStartSecond ?? 47;
-            startTimeSet.current = true;
+        onPlaying={() => {
+          // Seek AFTER playback starts — the only reliable method on mobile Safari/Chrome
+          if (audioRef.current && needsSeek.current) {
+            audioRef.current.currentTime = startSecond;
+            needsSeek.current = false;
           }
         }}
         className="hidden absolute w-0 h-0 pointer-events-none opacity-0 border-0"
