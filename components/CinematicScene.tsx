@@ -800,7 +800,7 @@ export function CinematicScene() {
 
   useLayoutEffect(() => {
     const isMobile = typeof navigator !== 'undefined' && /Mobi|Android|iPhone/i.test(navigator.userAgent);
-    const targetAnisotropy = isMobile ? 2 : 8;
+    const targetAnisotropy = isMobile ? 4 : 8;
     loadedTextures.forEach(tex => {
       tex.anisotropy = targetAnisotropy;
       tex.minFilter = THREE.LinearMipmapLinearFilter;

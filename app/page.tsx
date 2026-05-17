@@ -26,7 +26,7 @@ export default function App() {
       }}
     >
       <Canvas 
-        dpr={[1, 1.5]}
+        dpr={[1, 2]}
         gl={{ 
           antialias: false,
           powerPreference: "high-performance",
