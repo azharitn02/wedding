@@ -90,15 +90,13 @@ export function MusicPlayer() {
   return (
     <>
       {/* Hidden YouTube Iframe Player (Only mounts once loading hits 100%) */}
-      {isLoaded && (
-        <iframe
-          ref={iframeRef}
-          src={`https://www.youtube.com/embed/${youtubeId}?enablejsapi=1&autoplay=1&mute=0&loop=1&playlist=${youtubeId}&controls=0&showinfo=0&rel=0&start=${(WEDDING_CONFIG as any).musicStartSecond ?? 0}`}
-          allow="autoplay"
-          className="hidden pointer-events-none w-0 h-0 border-0 opacity-0 absolute"
-          title="Background Music"
-        />
-      )}
+      <iframe
+        ref={iframeRef}
+        src={`https://www.youtube.com/embed/${youtubeId}?enablejsapi=1&autoplay=0&mute=0&loop=1&playlist=${youtubeId}&controls=0&showinfo=0&rel=0&start=${(WEDDING_CONFIG as any).musicStartSecond ?? 0}`}
+        allow="autoplay"
+        className="hidden pointer-events-none w-0 h-0 border-0 opacity-0 absolute"
+        title="Background Music"
+      />
 
       {/* Embedded Rich CSS Animations for Vinyl & Floating Notes */}
       <style>{`

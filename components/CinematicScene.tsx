@@ -801,8 +801,10 @@ export function CinematicScene() {
   const loadedTextures = useTexture(texturePaths);
 
   useLayoutEffect(() => {
+    const isMobile = typeof navigator !== 'undefined' && /Mobi|Android|iPhone/i.test(navigator.userAgent);
+    const targetAnisotropy = isMobile ? 2 : 8;
     loadedTextures.forEach(tex => {
-      tex.anisotropy = 16;
+      tex.anisotropy = targetAnisotropy;
       tex.minFilter = THREE.LinearMipmapLinearFilter;
       tex.magFilter = THREE.LinearFilter;
       tex.colorSpace = THREE.SRGBColorSpace;
@@ -1019,6 +1021,17 @@ export function CinematicScene() {
     // Directly track Drei's scroll offset (eliminating double/triple-lerp lag entirely for pixel-perfect centering)
     const t = scroll.offset;
     slidesGroup.current.position.y = t * D;
+
+    // Elite-tier mobile rendering optimization: dynamically cull off-screen slides
+    const vh = viewport.height;
+    const groupY = slidesGroup.current.position.y;
+    slidesGroup.current.children.forEach((child, index) => {
+      const slideY = getSlideY(index, vh) + groupY;
+      const isVisible = Math.abs(slideY) < vh * 1.5;
+      if (child.visible !== isVisible) {
+        child.visible = isVisible;
+      }
+    });
   });
 
   // Re-map loaded textures back to their roles

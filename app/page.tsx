@@ -17,14 +17,24 @@ export default function App() {
 
   return (
     <div 
-      className="w-screen h-screen bg-[#0A120D] font-sans selection:bg-[#4B182B] selection:text-[#F8F3ED] text-[#F8F3ED] overflow-hidden"
+      className="w-screen h-screen h-[100dvh] bg-[#0A120D] font-sans selection:bg-[#4B182B] selection:text-[#F8F3ED] text-[#F8F3ED] overflow-hidden"
       style={{
         backgroundImage: `url('${getAssetPath('/background/01_cover.jpg')}')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
+        height: '100dvh',
       }}
     >
-      <Canvas dpr={[1, 2]}>
+      <Canvas 
+        dpr={[1, 1.5]}
+        gl={{ 
+          antialias: false,
+          powerPreference: "high-performance",
+          stencil: false,
+          depth: true,
+          alpha: true
+        }}
+      >
         <Suspense fallback={null}>
           <ScrollControls pages={totalPages} damping={WEDDING_CONFIG.transitionSpeed ?? 0.2}>
             <CinematicScene />
