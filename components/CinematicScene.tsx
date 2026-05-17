@@ -36,7 +36,9 @@ function ParallaxContent({ tex, index, multiplier, zOffset = 0, width, height }:
     const { viewport } = useThree();
 
     useFrame(() => {
-        if (!scroll) return;
+        if (!scroll || !ref.current) return;
+        // Skip computation if parent slide is culled (not visible)
+        if (ref.current.parent && !ref.current.parent.visible) return;
         const t = scroll.offset;
         const D = getScrollDist(viewport.height);
         
@@ -44,9 +46,7 @@ function ParallaxContent({ tex, index, multiplier, zOffset = 0, width, height }:
         const targetY = -getSlideY(index, viewport.height);
         const distanceToTarget = currentY - targetY;
 
-        if (ref.current) {
-            ref.current.position.y = distanceToTarget * multiplier;
-        }
+        ref.current.position.y = distanceToTarget * multiplier;
     });
 
     return (
@@ -144,16 +144,16 @@ function SlideOrnament({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 
     const worldY = (y / 100) * bgH;
 
     useFrame((state) => {
-        if (ref.current && scroll) {
-            const t = scroll.offset;
-            const D = getScrollDist(viewport.height);
-            const parallaxOffset = t * D * multiplier;
+        if (!ref.current || !scroll) return;
+        if (ref.current.parent && !ref.current.parent.visible) return;
+        const t = scroll.offset;
+        const D = getScrollDist(viewport.height);
+        const parallaxOffset = t * D * multiplier;
 
-            const time = state.clock.elapsedTime;
-            ref.current.position.y = worldY + parallaxOffset + Math.cos(time * 0.6 + delay) * 0.05;
-            ref.current.position.x = worldX + Math.sin(time * 0.4 + delay) * 0.05;
-            ref.current.rotation.z = Math.sin(time * 0.3 + delay) * 0.02;
-        }
+        const time = state.clock.elapsedTime;
+        ref.current.position.y = worldY + parallaxOffset + Math.cos(time * 0.6 + delay) * 0.05;
+        ref.current.position.x = worldX + Math.sin(time * 0.4 + delay) * 0.05;
+        ref.current.rotation.z = Math.sin(time * 0.3 + delay) * 0.02;
     });
 
     return (
@@ -182,21 +182,21 @@ function SlideText({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0, z
     const worldY = (y / 100) * bgH;
 
     useFrame((state) => {
-        if (ref.current && scroll) {
-            const t = scroll.offset;
-            const D = getScrollDist(viewport.height);
-            const parallaxOffset = t * D * multiplier;
+        if (!ref.current || !scroll) return;
+        if (ref.current.parent && !ref.current.parent.visible) return;
+        const t = scroll.offset;
+        const D = getScrollDist(viewport.height);
+        const parallaxOffset = t * D * multiplier;
 
-            if (animation) {
-                const time = state.clock.elapsedTime;
-                ref.current.position.y = worldY + parallaxOffset + Math.cos(time * 0.6 + delay) * 0.05;
-                ref.current.position.x = worldX + Math.sin(time * 0.4 + delay) * 0.05;
-                ref.current.rotation.z = Math.sin(time * 0.3 + delay) * 0.02;
-            } else {
-                ref.current.position.y = worldY + parallaxOffset;
-                ref.current.position.x = worldX;
-                ref.current.rotation.z = 0;
-            }
+        if (animation) {
+            const time = state.clock.elapsedTime;
+            ref.current.position.y = worldY + parallaxOffset + Math.cos(time * 0.6 + delay) * 0.05;
+            ref.current.position.x = worldX + Math.sin(time * 0.4 + delay) * 0.05;
+            ref.current.rotation.z = Math.sin(time * 0.3 + delay) * 0.02;
+        } else {
+            ref.current.position.y = worldY + parallaxOffset;
+            ref.current.position.x = worldX;
+            ref.current.rotation.z = 0;
         }
     });
 
@@ -244,21 +244,21 @@ function SlideHeartbeat({ tex, x = 0, y = 0, bgW, bgH, size, delay = 0, multipli
     const worldY = (y / 100) * bgH;
 
     useFrame((state) => {
-        if (ref.current && scroll) {
-            const t = scroll.offset;
-            const D = getScrollDist(viewport.height);
-            const parallaxOffset = t * D * multiplier;
+        if (!ref.current || !scroll) return;
+        if (ref.current.parent && !ref.current.parent.visible) return;
+        const t = scroll.offset;
+        const D = getScrollDist(viewport.height);
+        const parallaxOffset = t * D * multiplier;
 
-            const time = state.clock.elapsedTime;
-            ref.current.position.y = worldY + parallaxOffset + Math.cos(time * 0.6 + delay) * 0.05;
-            ref.current.position.x = worldX + Math.sin(time * 0.4 + delay) * 0.05;
-            ref.current.rotation.z = Math.sin(time * 0.3 + delay) * 0.02;
+        const time = state.clock.elapsedTime;
+        ref.current.position.y = worldY + parallaxOffset + Math.cos(time * 0.6 + delay) * 0.05;
+        ref.current.position.x = worldX + Math.sin(time * 0.4 + delay) * 0.05;
+        ref.current.rotation.z = Math.sin(time * 0.3 + delay) * 0.02;
 
-            // Heartbeat animation (pulse scale)
-            const beat = Math.pow(Math.sin(time * beatSpeed + beatDelay), 12) * 0.15 + Math.pow(Math.sin(time * beatSpeed + 0.3 + beatDelay), 12) * 0.05;
-            const scale = 1 + beat;
-            ref.current.scale.set(scale, scale, 1);
-        }
+        // Heartbeat animation (pulse scale)
+        const beat = Math.pow(Math.sin(time * beatSpeed + beatDelay), 12) * 0.15 + Math.pow(Math.sin(time * beatSpeed + 0.3 + beatDelay), 12) * 0.05;
+        const scale = 1 + beat;
+        ref.current.scale.set(scale, scale, 1);
     });
 
     return (
@@ -299,25 +299,23 @@ function SlideRotate({ tex, x = 0, y = 0, bgW, bgH, size, delay = 0, multiplier 
     const worldY = baseY + pivotOffsetY;
 
     useFrame((state) => {
-        if (ref.current && scroll) {
-            const t = scroll.offset;
-            const D = getScrollDist(viewport.height);
-            const parallaxOffset = t * D * multiplier;
+        if (!ref.current || !scroll) return;
+        if (ref.current.parent && !ref.current.parent.visible) return;
+        const t = scroll.offset;
+        const D = getScrollDist(viewport.height);
+        const parallaxOffset = t * D * multiplier;
 
-            const time = state.clock.elapsedTime;
-            ref.current.position.y = worldY + parallaxOffset;
-            ref.current.position.x = worldX;
-            
-            if (randomize) {
-                // Dynamic wind-like swinging animation
-                const baseSwing = Math.sin(time * rotateSpeed * randomSpeedMod + delay + randomPhase);
-                const amplitudeMod = 0.6 + 0.4 * Math.sin(time * rotateSpeed * 0.3 + randomPhase * 2);
-                const wobble = 0.1 * Math.sin(time * rotateSpeed * 1.6 + randomPhase * 3);
-                ref.current.rotation.z = (baseSwing + wobble) * (rotateAmount * amplitudeMod);
-            } else {
-                // Standard perfect rotation
-                ref.current.rotation.z = Math.sin(time * rotateSpeed + delay) * rotateAmount;
-            }
+        const time = state.clock.elapsedTime;
+        ref.current.position.y = worldY + parallaxOffset;
+        ref.current.position.x = worldX;
+        
+        if (randomize) {
+            const baseSwing = Math.sin(time * rotateSpeed * randomSpeedMod + delay + randomPhase);
+            const amplitudeMod = 0.6 + 0.4 * Math.sin(time * rotateSpeed * 0.3 + randomPhase * 2);
+            const wobble = 0.1 * Math.sin(time * rotateSpeed * 1.6 + randomPhase * 3);
+            ref.current.rotation.z = (baseSwing + wobble) * (rotateAmount * amplitudeMod);
+        } else {
+            ref.current.rotation.z = Math.sin(time * rotateSpeed + delay) * rotateAmount;
         }
     });
 
@@ -349,13 +347,13 @@ function SlidePicture({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0
     const worldY = (y / 100) * bgH;
 
     useFrame(() => {
-        if (ref.current && scroll) {
-            const t = scroll.offset;
-            const D = getScrollDist(viewport.height);
-            const parallaxOffset = t * D * multiplier;
+        if (!ref.current || !scroll) return;
+        if (ref.current.parent && !ref.current.parent.visible) return;
+        const t = scroll.offset;
+        const D = getScrollDist(viewport.height);
+        const parallaxOffset = t * D * multiplier;
 
-            ref.current.position.y = worldY + parallaxOffset;
-        }
+        ref.current.position.y = worldY + parallaxOffset;
     });
 
     return (
@@ -385,27 +383,27 @@ function SlideHtml({ x = 0, y = 0, bgW, bgH, text, link, multiplier = 0, zOffset
     const randomSpeedMod = useMemo(() => 0.8 + Math.random() * 0.4, []); 
 
     useFrame((state) => {
-        if (ref.current && scroll) {
-            const t = scroll.offset;
-            const D = getScrollDist(viewport.height);
-            const parallaxOffset = t * D * multiplier;
-            ref.current.position.y = worldY + parallaxOffset;
-            
-            const time = state.clock.elapsedTime;
+        if (!ref.current || !scroll) return;
+        if (ref.current.parent && !ref.current.parent.visible) return;
+        const t = scroll.offset;
+        const D = getScrollDist(viewport.height);
+        const parallaxOffset = t * D * multiplier;
+        ref.current.position.y = worldY + parallaxOffset;
+        
+        const time = state.clock.elapsedTime;
 
-            if (animation === "heartbeat") {
-                const beat = Math.pow(Math.sin(time * beatSpeed + delay), 12) * 0.15 + Math.pow(Math.sin(time * beatSpeed + 0.3 + delay), 12) * 0.05;
-                const scale = 1 + beat;
-                ref.current.scale.set(scale, scale, 1);
-            } else if (animation === "rotate") {
-                if (randomize) {
-                    const baseSwing = Math.sin(time * rotateSpeed * randomSpeedMod + delay + randomPhase);
-                    const amplitudeMod = 0.6 + 0.4 * Math.sin(time * rotateSpeed * 0.3 + randomPhase * 2);
-                    const wobble = 0.1 * Math.sin(time * rotateSpeed * 1.6 + randomPhase * 3);
-                    ref.current.rotation.z = (baseSwing + wobble) * (rotateAmount * amplitudeMod);
-                } else {
-                    ref.current.rotation.z = Math.sin(time * rotateSpeed + delay) * rotateAmount;
-                }
+        if (animation === "heartbeat") {
+            const beat = Math.pow(Math.sin(time * beatSpeed + delay), 12) * 0.15 + Math.pow(Math.sin(time * beatSpeed + 0.3 + delay), 12) * 0.05;
+            const scale = 1 + beat;
+            ref.current.scale.set(scale, scale, 1);
+        } else if (animation === "rotate") {
+            if (randomize) {
+                const baseSwing = Math.sin(time * rotateSpeed * randomSpeedMod + delay + randomPhase);
+                const amplitudeMod = 0.6 + 0.4 * Math.sin(time * rotateSpeed * 0.3 + randomPhase * 2);
+                const wobble = 0.1 * Math.sin(time * rotateSpeed * 1.6 + randomPhase * 3);
+                ref.current.rotation.z = (baseSwing + wobble) * (rotateAmount * amplitudeMod);
+            } else {
+                ref.current.rotation.z = Math.sin(time * rotateSpeed + delay) * rotateAmount;
             }
         }
     });
@@ -461,12 +459,12 @@ function SlideForm({ x = 0, y = 0, bgW, bgH, multiplier = 0, zOffset = 0 }: any)
     }
 
     useFrame((state) => {
-        if (ref.current && scroll) {
-            const t = scroll.offset;
-            const D = getScrollDist(viewport.height);
-            const parallaxOffset = t * D * multiplier;
-            ref.current.position.y = worldY + parallaxOffset;
-        }
+        if (!ref.current || !scroll) return;
+        if (ref.current.parent && !ref.current.parent.visible) return;
+        const t = scroll.offset;
+        const D = getScrollDist(viewport.height);
+        const parallaxOffset = t * D * multiplier;
+        ref.current.position.y = worldY + parallaxOffset;
     });
 
     const fetchWishes = async () => {
@@ -862,7 +860,7 @@ export function CinematicScene() {
       scrollCooldown.current = true;
       setTimeout(() => {
         scrollCooldown.current = false;
-      }, 1000); // 1000ms cooldown for smooth, controlled transition
+      }, 600); // 600ms cooldown — responsive enough for mobile, controlled enough to prevent skips
     }
   };
 
@@ -904,7 +902,7 @@ export function CinematicScene() {
       if (scrollCooldown.current) return;
       if (e.changedTouches.length > 0) {
         const deltaY = touchStartY - e.changedTouches[0].clientY;
-        if (Math.abs(deltaY) > 30) {
+        if (Math.abs(deltaY) > 15) {
           triggerSlideTransition(deltaY > 0);
         }
       }
