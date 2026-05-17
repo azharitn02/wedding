@@ -7,12 +7,14 @@ export function MusicPlayer() {
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const startTimeSet = useRef(false);
   
   const handlePlay = () => {
     if (audioRef.current) {
-      // Set start time on first play if current time is 0
-      if (audioRef.current.currentTime === 0) {
+      // Set start time on first play if not already set
+      if (!startTimeSet.current) {
         audioRef.current.currentTime = (WEDDING_CONFIG as any).musicStartSecond ?? 47;
+        startTimeSet.current = true;
       }
       audioRef.current.play()
         .then(() => {
@@ -92,6 +94,12 @@ export function MusicPlayer() {
         src={getAssetPath('/musicbg.mp3')}
         loop
         preload="auto"
+        onLoadedMetadata={() => {
+          if (audioRef.current && !startTimeSet.current) {
+            audioRef.current.currentTime = (WEDDING_CONFIG as any).musicStartSecond ?? 47;
+            startTimeSet.current = true;
+          }
+        }}
         className="hidden absolute w-0 h-0 pointer-events-none opacity-0 border-0"
       />
 
