@@ -979,46 +979,12 @@ export function CinematicScene() {
       }
     };
 
-    // Keyboard handler for both modes
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const active = document.activeElement;
-      if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT' || active.getAttribute('contenteditable') === 'true')) {
-        return;
-      }
-      
-      const totalSlides = WEDDING_CONFIG.slides.length;
-      let nextIndex = activeSlideIndex.current;
-      
-      if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) {
-        e.preventDefault();
-        nextIndex = Math.min(nextIndex + 1, totalSlides - 1);
-      } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp' || (e.key === ' ' && e.shiftKey)) {
-        e.preventDefault();
-        nextIndex = Math.max(nextIndex - 1, 0);
-      }
-      
-      if (nextIndex !== activeSlideIndex.current) {
-        activeSlideIndex.current = nextIndex;
-        if (scrollMode === 'smooth') {
-          isUserScrolling.current = false; // Snap instantly on arrow press
-        } else {
-          // Set cooldown in strict mode
-          scrollCooldown.current = true;
-          setTimeout(() => {
-            scrollCooldown.current = false;
-          }, 1000);
-        }
-      }
-    };
-
     if (scrollMode === 'strict') {
       window.addEventListener('wheel', handleWheelStrict, { passive: false });
       window.addEventListener('touchstart', handleTouchStartStrict, { passive: true });
       window.addEventListener('touchmove', handleTouchMoveStrict, { passive: false });
       window.addEventListener('touchend', handleTouchEndStrict, { passive: true });
     }
-    
-    window.addEventListener('keydown', handleKeyDown);
     
     return () => {
       if (scrollMode === 'strict') {
@@ -1027,7 +993,6 @@ export function CinematicScene() {
         window.removeEventListener('touchmove', handleTouchMoveStrict);
         window.removeEventListener('touchend', handleTouchEndStrict);
       }
-      window.removeEventListener('keydown', handleKeyDown);
       
       // Cleanup smooth mode scroll listener if attached
       if (scrollElementRef.current && scrollHandlerRef.current) {
