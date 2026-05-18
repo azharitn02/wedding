@@ -377,7 +377,7 @@ function SlideHtml({ x = 0, y = 0, bgW, bgH, text, link, multiplier = 0, zOffset
                   href={link} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="px-5 py-2 text-[#F8F3ED] text-xs font-serif tracking-widest hover:bg-[#32101c]/80 transition-all rounded whitespace-nowrap flex items-center gap-2"
+                  className={`px-5 py-2 text-xs font-sans tracking-widest hover:bg-[#32101c]/80 transition-all rounded whitespace-nowrap flex items-center gap-2 ${link.includes("maps") ? "text-[#4B182B]" : "text-[#F8F3ED]"}`}
                   style={{ pointerEvents: 'auto' }}
                 >
                   {isMap ? (
