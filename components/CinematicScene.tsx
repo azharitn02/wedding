@@ -1077,9 +1077,9 @@ export function CinematicScene() {
   ];
 
   const dresscodeSlideConfig = [
-    { type: 'SlidePicture', tex: palette8Tex, x: 0, y: -142, sizeRaw: 3.5, delay: 1, multiplier: 0.1 },
-    { type: 'SlidePicture', tex: text81Tex, x: 0, y: -124, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlidePicture', tex: text82Tex, x: 1, y: -150, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 }
+    { type: 'SlidePicture', tex: palette8Tex, x: 0, y: -143, sizeRaw: 3.5, delay: 1, multiplier: 0.1 },
+    { type: 'SlidePicture', tex: text81Tex, x: 0, y: -125, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlidePicture', tex: text82Tex, x: 1, y: -151, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 }
   ];
 
   const storySlideConfig = [
