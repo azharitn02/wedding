@@ -7,6 +7,7 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { ScrollControls } from '@react-three/drei';
+import * as THREE from 'three';
 import { CinematicScene, getScrollDist } from '@/components/CinematicScene';
 import { WEDDING_CONFIG, getAssetPath } from '@/app/weddingConfig';
 import { MusicPlayer } from '@/components/MusicPlayer';
@@ -32,7 +33,8 @@ export default function App() {
           powerPreference: "high-performance",
           stencil: false,
           depth: true,
-          alpha: true
+          alpha: true,
+          toneMapping: THREE.ACESFilmicToneMapping,
         }}
       >
         <Suspense fallback={null}>

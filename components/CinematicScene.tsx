@@ -52,7 +52,7 @@ function ParallaxContent({ tex, index, multiplier, zOffset = 0, width, height }:
     return (
         <mesh ref={ref} position={[0, 0, zOffset]}>
             <planeGeometry args={[width, height]} />
-            <meshBasicMaterial map={tex} transparent />
+            <meshBasicMaterial map={tex} transparent toneMapped={false} />
         </mesh>
     );
 }
@@ -95,33 +95,24 @@ function ResponsiveBackground({
     const meshHeight = baseHeight * bgHeightMultiplier;
     const meshAspect = meshWidth / meshHeight;
     
-    // To prevent texture squishing/distortion, we clone the texture if scaled
-    // and adjust the repeat/offset to maintain "cover" aspect ratio.
-    const finalTex = useMemo(() => {
-        if (bgHeightMultiplier === 1 && bgWidthMultiplier === 1) {
-            return tex;
-        }
-        
-        const cloned = tex.clone();
-        
+    // Adjust texture transformation directly on the original instance safely 
+    // instead of wasting GPU allocations on .clone()
+    useEffect(() => {
+        if (!tex) return;
         if (meshAspect > imageAspect) {
-            // Mesh is wider than image: crop image vertically
-            cloned.repeat.set(1, imageAspect / meshAspect);
-            cloned.offset.set(0, (1 - imageAspect / meshAspect) / 2);
+            tex.repeat.set(1, imageAspect / meshAspect);
+            tex.offset.set(0, (1 - imageAspect / meshAspect) / 2);
         } else {
-            // Mesh is taller than image: crop image horizontally
-            cloned.repeat.set(meshAspect / imageAspect, 1);
-            cloned.offset.set((1 - meshAspect / imageAspect) / 2, 0);
+            tex.repeat.set(meshAspect / imageAspect, 1);
+            tex.offset.set((1 - meshAspect / imageAspect) / 2, 0);
         }
-        
-        cloned.needsUpdate = true;
-        return cloned;
-    }, [tex, bgHeightMultiplier, bgWidthMultiplier, meshAspect, imageAspect]);
+        tex.needsUpdate = true;
+    }, [tex, meshAspect, imageAspect]);
 
     return (
         <mesh position={[0, 0, LAYERS.BACKGROUND]} scale={[meshWidth, meshHeight, 1]} renderOrder={-10}>
             <planeGeometry />
-            <meshBasicMaterial map={finalTex} color="#ffffff" transparent={true} depthTest={false} depthWrite={false} />
+            <meshBasicMaterial map={tex} color="#ffffff" transparent={true} depthTest={false} depthWrite={false} toneMapped={true} />
         </mesh>
     );
 }
@@ -159,7 +150,7 @@ function SlideOrnament({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 
     return (
         <mesh ref={ref} position={[worldX, worldY, LAYERS.ORNAMENTS + zOffset]}>
             <planeGeometry args={[size, size / aspect]} />
-            <meshBasicMaterial map={tex} transparent />
+            <meshBasicMaterial map={tex} transparent toneMapped={true} />
         </mesh>
     );
 }
@@ -221,7 +212,7 @@ function SlideText({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0, z
             onPointerOut={handlePointerOut}
         >
             <planeGeometry args={[size, size / aspect]} />
-            <meshBasicMaterial map={tex} transparent />
+            <meshBasicMaterial map={tex} transparent toneMapped={true} />
         </mesh>
     );
 }
@@ -264,7 +255,7 @@ function SlideHeartbeat({ tex, x = 0, y = 0, bgW, bgH, size, delay = 0, multipli
     return (
         <mesh ref={ref} position={[worldX, worldY, LAYERS.TEXT + zOffset]}>
             <planeGeometry args={[size, size / aspect]} />
-            <meshBasicMaterial map={tex} transparent />
+            <meshBasicMaterial map={tex} transparent toneMapped={true} />
         </mesh>
     );
 }
@@ -323,7 +314,7 @@ function SlideRotate({ tex, x = 0, y = 0, bgW, bgH, size, delay = 0, multiplier 
         <group ref={ref} position={[worldX, worldY, LAYERS.TEXT + zOffset]}>
             <mesh position={[0, meshOffsetY, 0]}>
                 <planeGeometry args={[size, height]} />
-                <meshBasicMaterial map={tex} transparent />
+                <meshBasicMaterial map={tex} transparent toneMapped={true}/>
             </mesh>
         </group>
     );
@@ -359,7 +350,7 @@ function SlidePicture({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0
     return (
         <mesh ref={ref} position={[worldX, worldY, LAYERS.ORNAMENTS + zOffset]}>
             <planeGeometry args={[size, size / aspect]} />
-            <meshBasicMaterial map={tex} transparent />
+            <meshBasicMaterial map={tex} transparent toneMapped={false}/>
         </mesh>
     );
 }
@@ -417,7 +408,7 @@ function SlideHtml({ x = 0, y = 0, bgW, bgH, text, link, multiplier = 0, zOffset
                   href={link} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="px-5 py-2 text-[#F8F3ED] text-xs font-serif tracking-widest hover:bg-[#32101c]/80 transition-all rounded whitespace-nowrap flex items-center gap-2"
+                  className={`px-5 py-2 text-xs font-sans tracking-widest hover:bg-[#32101c]/80 transition-all rounded whitespace-nowrap flex items-center gap-2 ${link.includes('maps') ? "text-[#4B182B]" : "text-[#F8F3ED]"}`}
                   style={{ pointerEvents: 'auto' }}
                 >
                   {isMap ? (
@@ -879,9 +870,10 @@ export function CinematicScene() {
 
   useLayoutEffect(() => {
     const isMobile = typeof navigator !== 'undefined' && /Mobi|Android|iPhone/i.test(navigator.userAgent);
-    const targetAnisotropy = isMobile ? 4 : 8;
+    
     loadedTextures.forEach(tex => {
-      tex.anisotropy = targetAnisotropy;
+      // Mobile devices do not need high anisotropy for flat layout planes
+      tex.anisotropy = isMobile ? 1 : 4; 
       tex.minFilter = THREE.LinearMipmapLinearFilter;
       tex.magFilter = THREE.LinearFilter;
       tex.colorSpace = THREE.SRGBColorSpace;
@@ -1178,8 +1170,8 @@ export function CinematicScene() {
     { type: 'SlideText', tex: text7ResepsiTex, x: 0, y: -60.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
     { type: 'SlideText', tex: text7ResepsiTglTex, x: 0, y: -72.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
     { type: 'SlideText', tex: text7AlamatTex, x: 0, y: -77, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7AlamatJlnTex, x: 1, y: -81.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false, link: "https://maps.app.goo.gl/KFAq19GNW1pxqRPc8" },
-    { type: 'SlideHtml', x: 1, y: -90.5, sizeRaw: 0.2, delay: 1, multiplier: 0.12, link: "https://maps.app.goo.gl/KFAq19GNW1pxqRPc8", text: "Open Maps" },
+    { type: 'SlideText', tex: text7AlamatJlnTex, x: 1, y: -81.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false, link: "https://maps.app.goo.gl/DL9GCEW3aqSUiKGh9" },
+    { type: 'SlideHtml', x: 1, y: -90.5, sizeRaw: 0.2, delay: 1, multiplier: 0.12, link: "https://maps.app.goo.gl/DL9GCEW3aqSUiKGh9", text: "Open Maps" },
     { type: 'SlideRotate', tex: bunga1Tex, x: 27, y: -38.5, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" },
     { type: 'SlideRotate', tex: bunga3Tex, x: -27, y: -59, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" }
   ];
@@ -1200,7 +1192,7 @@ export function CinematicScene() {
   ];
 
   const rsvpSlideConfig = [
-    { type: 'SlideText', tex: text111Tex, x: -2, y: -50.5, sizeMult: 0.8, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text111Tex, x: -0, y: -62.5, sizeMult: 0.8, delay: 2, multiplier: 0.12, zOffset: 2 },
     { type: 'SlideForm', x: 1, y: -94.5, delay: undefined, multiplier: 0.12, zOffset: 2 }
   ];
 
