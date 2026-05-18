@@ -1014,14 +1014,14 @@ export function CinematicScene() {
   const [orchidTex, goldMotifTex, petalTex, customOrnamentTex, logo1Tex, text11Tex, text12Tex, text13Tex, text14Tex, text15Tex, bunga1Tex, bunga2Tex, bunga3Tex, couple2Tex, border2Tex, text21Tex, text22Tex, text23Tex, surah3Tex, terjemah3Tex, bride4Tex, text41Tex, text42Tex, text43Tex, bride5Tex, text51Tex, text52Tex, text53Tex, border6Tex, text61Tex, text62Tex, text71Tex, text72Tex, text7AkadTex, text7AkadTglTex, text7ResepsiTex, text7ResepsiTglTex, text7AlamatTex, text7AlamatJlnTex, text81Tex, text82Tex, palette8Tex, text91Tex, text92Tex, text93Tex, text94Tex, image91Tex, image92Tex, text111Tex, text121Tex, text122Tex, border12Tex, logo131Tex] = loadedTextures.slice(pointer);
 
   const introSlideConfig = [
-    { type: 'SlideText', tex: logo1Tex, x: 1, y: 18.5, sizeMult: 0.1, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text11Tex, x: 1, y: 2, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text12Tex, x: 1, y: 3, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideRotate', tex: text13Tex, x: 1, y: 1.5, sizeMult: 0.26, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle" },
-    { type: 'SlideText', tex: text14Tex, x: -2, y: -4, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideRotate', tex: text15Tex, x: 0, y: -10, sizeMult: 0.23, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 2, rotateAmount: 0.08, pivot: "middle" },
-    { type: 'SlideRotate', tex: bunga1Tex, x: -25, y: 22, sizeMult: 0.5, delay: 0, multiplier: 0.2,rotateSpeed: 1.8, rotateAmount: 0.1, pivot: "middle" },
-    { type: 'SlideRotate', tex: bunga2Tex, x: 24, y: -12.5, sizeMult: 0.5, delay: 1, multiplier: 0.25, rotateSpeed: 2, rotateAmount: 0.08, pivot: "middle" },
+    { type: 'SlideText', tex: logo1Tex, x: 1, y: 16.5, sizeMult: 0.1, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text11Tex, x: 1, y: 0, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text12Tex, x: 1, y: 1, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideRotate', tex: text13Tex, x: 1, y: -1.5, sizeMult: 0.26, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle" },
+    { type: 'SlideText', tex: text14Tex, x: -2, y: -6, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideRotate', tex: text15Tex, x: 0, y: -12, sizeMult: 0.23, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 2, rotateAmount: 0.08, pivot: "middle" },
+    { type: 'SlideRotate', tex: bunga1Tex, x: -25, y: 20, sizeMult: 0.5, delay: 0, multiplier: 0.2,rotateSpeed: 1.8, rotateAmount: 0.1, pivot: "middle" },
+    { type: 'SlideRotate', tex: bunga2Tex, x: 24, y: -14.5, sizeMult: 0.5, delay: 1, multiplier: 0.25, rotateSpeed: 2, rotateAmount: 0.08, pivot: "middle" },
   ];
 
   const couplesSlideConfig = [
