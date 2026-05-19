@@ -1,6 +1,7 @@
 'use client';
 import React, { useRef, useLayoutEffect, useMemo, useState, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
+import { useSearchParams } from 'next/navigation';
 import { useScroll, useTexture, PerspectiveCamera, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { backgroundTextures, slideElementTextures, decorationTextures } from '../app/cinematicTextures';
@@ -759,6 +760,22 @@ export function CinematicScene() {
   const { viewport } = useThree();
   const slidesGroup = useRef<THREE.Group>(null);
 
+  // Fetch URL search parameters safely
+  const searchParams = useSearchParams();
+
+  // Handles both standard '?to=Name' and raw '?Name' formats smoothly
+  const guestName = useMemo(() => {
+    const toParam = searchParams.get('to');
+    if (toParam) return decodeURIComponent(toParam);
+
+    // Fallback for raw query parameters like ?Elowen
+    const rawKeys = Array.from(searchParams.keys());
+    if (rawKeys.length > 0 && rawKeys[0] !== '') {
+      return decodeURIComponent(rawKeys[0]);
+    }
+    return null; // Fallback if no guest name is provided
+  }, [searchParams]);
+
   const texturePaths = useMemo(() => [
     ...backgroundTextures,
     ...slideElementTextures.flat(),
@@ -1014,14 +1031,14 @@ export function CinematicScene() {
   const [orchidTex, goldMotifTex, petalTex, customOrnamentTex, logo1Tex, text11Tex, text12Tex, text13Tex, text14Tex, text15Tex, bunga1Tex, bunga2Tex, bunga3Tex, couple2Tex, border2Tex, text21Tex, text22Tex, text23Tex, surah3Tex, terjemah3Tex, bride4Tex, text41Tex, text42Tex, text43Tex, bride5Tex, text51Tex, text52Tex, text53Tex, border6Tex, text61Tex, text62Tex, text71Tex, text72Tex, text7AkadTex, text7AkadTglTex, text7ResepsiTex, text7ResepsiTglTex, text7AlamatTex, text7AlamatJlnTex, text81Tex, text82Tex, palette8Tex, text91Tex, text92Tex, text93Tex, text94Tex, image91Tex, image92Tex, text111Tex, text121Tex, text122Tex, border12Tex, logo131Tex] = loadedTextures.slice(pointer);
 
   const introSlideConfig = [
-    { type: 'SlideText', tex: logo1Tex, x: 1, y: 16.5, sizeMult: 0.1, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text11Tex, x: 1, y: 0, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text12Tex, x: 1, y: 1, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideRotate', tex: text13Tex, x: 1, y: -1.5, sizeMult: 0.26, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle" },
-    { type: 'SlideText', tex: text14Tex, x: -2, y: -6, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideRotate', tex: text15Tex, x: 0, y: -12, sizeMult: 0.23, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 2, rotateAmount: 0.08, pivot: "middle" },
-    { type: 'SlideRotate', tex: bunga1Tex, x: -25, y: 20, sizeMult: 0.5, delay: 0, multiplier: 0.2,rotateSpeed: 1.8, rotateAmount: 0.1, pivot: "middle" },
-    { type: 'SlideRotate', tex: bunga2Tex, x: 24, y: -14.5, sizeMult: 0.5, delay: 1, multiplier: 0.25, rotateSpeed: 2, rotateAmount: 0.08, pivot: "middle" },
+    { type: 'SlideText', tex: logo1Tex, x: 1, y: 13.5, sizeMult: 0.1, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text11Tex, x: 1, y: -3, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text12Tex, x: 1, y: -2, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideRotate', tex: text13Tex, x: 1, y: -4.5, sizeMult: 0.26, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle" },
+    { type: 'SlideText', tex: text14Tex, x: -2, y: -9, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideRotate', tex: text15Tex, x: 0, y: -15, sizeMult: 0.23, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 2, rotateAmount: 0.08, pivot: "middle" },
+    { type: 'SlideRotate', tex: bunga1Tex, x: -25, y: 17, sizeMult: 0.5, delay: 0, multiplier: 0.2,rotateSpeed: 1.8, rotateAmount: 0.1, pivot: "middle" },
+    { type: 'SlideRotate', tex: bunga2Tex, x: 24, y: -17.5, sizeMult: 0.5, delay: 1, multiplier: 0.25, rotateSpeed: 2, rotateAmount: 0.08, pivot: "middle" },
   ];
 
   const couplesSlideConfig = [
@@ -1181,6 +1198,21 @@ export function CinematicScene() {
               {slide.id === "intro" && (
                 <>
                   {introSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                  {/* Dynamic Guest Name Overlay */}
+                  {guestName && (
+                    <group position={[0, 2.9, LAYERS.TEXT + 2]}> {/* Adjust Y position to fit layout */}
+                      <Html center portal={scroll.el?.parentElement as any}>
+                        <div className="flex flex-col items-center justify-center text-center select-none animate-fade-in pointer-events-none">
+                          <span className="text-[#F8F3ED]/50 font-sans tracking-[0.25em] text-[9px] uppercase mb-1">
+                            Dear
+                          </span>
+                          <h2 className="text-[#F8F3ED] font-serif text-xs tracking-widest font-medium drop-shadow-md px-4 py-1 border-y border-[#D4AF37]/20 whitespace-nowrap">
+                            {guestName}
+                          </h2>
+                        </div>
+                      </Html>
+                    </group>
+                  )}
                 </>
               )}
               {slide.id === "couples" && (

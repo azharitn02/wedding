@@ -40,7 +40,8 @@ export const generateElementSvg = (element: any) => {
   if (!fontStack) {
     if (font === 'serif') fontStack = 'Georgia, serif';
     else if (font === 'sans') fontStack = 'Arial, sans-serif';
-    else if (font === 'cursive') fontStack = "'Monsieur La Doulaise', cursive";
+    else if (font === 'cursive') fontStack = "'Ephesis', cursive";
+    else if (font === 'msmadi') fontStack = "'Ms Madi', cursive";
     else fontStack = 'Georgia, serif';
   }
   const fillColor = (WEDDING_CONFIG.colors as any)[color] || color;

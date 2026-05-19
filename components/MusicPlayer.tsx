@@ -129,14 +129,14 @@ export function MusicPlayer() {
       `}</style>
 
       {/* Floating Controller Button */}
-      <div className="fixed bottom-6 right-7 z-[9999] flex flex-col items-center">
+      <div className="fixed bottom-2 right-7 z-[9999] flex flex-col items-center">
         <button
           onClick={togglePlay}
-          className="relative w-12 h-12 flex items-center justify-center bg-[#0A120D]/75 hover:bg-[#32101c]/90 border border-[#D4AF37]/35 hover:border-[#D4AF37] rounded-full shadow-2xl transition-all duration-300 group cursor-pointer backdrop-blur-md select-none active:scale-95"
+          className="relative w-12 h-12 flex items-center justify-center bg-[#0A120D]/15 hover:bg-[#32101c]/20 border border-[#D4AF37]/15 hover:border-[#D4AF37] rounded-full shadow-2xl transition-all duration-300 group cursor-pointer select-none active:scale-95"
           aria-label={isPlaying ? 'Pause Music' : 'Play Music'}
         >
           {/* Active Vinyl Disc Graphic */}
-          <div className={`absolute inset-1 border border-[#D4AF37]/20 rounded-full flex items-center justify-center bg-[#151C18] ${isPlaying ? 'animate-spin-vinyl' : ''}`}>
+          <div className={`absolute inset-1 border border-[#D4AF37]/10 rounded-full flex items-center justify-center bg-[#151C18]/15 ${isPlaying ? 'animate-spin-vinyl' : ''}`}>
             {/* Inner vinyl ridges */}
             <div className="absolute inset-2 border border-[#D4AF37]/15 rounded-full" />
             <div className="absolute inset-3 border border-[#D4AF37]/10 rounded-full" />

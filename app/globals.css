@@ -1,5 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Ephesis&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ms+Madi&display=swap');
 @import "tailwindcss";
-
 @theme {
   --color-brand-beige: #D1C7BD;
   --color-brand-bone: #F9F8F6;
@@ -43,6 +44,18 @@
   font-style: italic;
 }
 
+.ephesis-regular {
+  font-family: "Ephesis", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.ms-madi-regular {
+  font-family: "Ms Madi", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
 .text-shadow-safe {
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8), 0 0 15px rgba(255, 255, 255, 0.4);
 }
@@ -84,11 +97,11 @@
   font-style: normal;
 }
 
-.font-cursive {
+/* .font-cursive {
   font-family: var(--font-cursive), cursive;
   font-weight: 400;
   font-style: normal;
-}
+} */
 
 body {
   background-color: var(--bg-beige);
