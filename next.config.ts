@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false,
   },
   // Allow access to remote image placeholder.
-  output: 'export',
+  output: process.env.GITHUB_ACTIONS === 'true' ? 'export' : undefined,
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
   trailingSlash: true,
   images: {
