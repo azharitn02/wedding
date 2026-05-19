@@ -46,7 +46,7 @@ export async function POST(request: Request) {
             RETURNING *;
         `;
 
-        return NextResponse.json(result[0], { status: 201 });
+        return NextResponse.json((result as any)[0], { status: 201 });
     } catch (error: any) {
         console.error('Error saving guestbook entry:', error);
         return NextResponse.json({ error: error.message }, { status: 500 });
