@@ -3,7 +3,7 @@ import { sql } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
-// Initialize the database table if it doesn't exist
+// Initialize the database table if it doesn't exist 
 const initDb = async () => {
     try {
         await sql`
