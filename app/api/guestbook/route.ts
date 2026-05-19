@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 
+export const dynamic = process.env.GITHUB_ACTIONS === 'true' ? 'force-static' : 'force-dynamic';
+
 // Initialize the database table if it doesn't exist 
 const initDb = async () => {
     try {
