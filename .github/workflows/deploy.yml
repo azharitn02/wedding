@@ -37,7 +37,9 @@ jobs:
         run: npm ci
       
       - name: Build with Next.js
-        run: npx next build
+        run: |
+          rm -rf app/api
+          npx next build
         env:
           # If your repository is not at username.github.io, 
           # you might need to set a base path.
