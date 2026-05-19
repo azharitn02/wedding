@@ -1,7 +1,5 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
-
-export const dynamic = 'force-dynamic';
 
 // Initialize the database table if it doesn't exist 
 const initDb = async () => {
@@ -20,7 +18,11 @@ const initDb = async () => {
     }
 };
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+    // Access searchParams to dynamically make Next.js treat this route as runtime dynamic
+    // without requiring "export const dynamic = 'force-dynamic'" which crashes static exports.
+    const _forceDynamic = request.nextUrl.searchParams;
+    
     try {
         await initDb();
         const result = await sql`SELECT * FROM guestbook_dhisa ORDER BY created_at DESC;`;
@@ -31,7 +33,7 @@ export async function GET() {
     }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
         await initDb();
         const { name, message, attending } = await request.json();
