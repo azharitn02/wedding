@@ -440,7 +440,7 @@ function SlideCopyButton({ x = 0, y = 0, bgW, bgH, text, copyText, multiplier = 
             <Html center zIndexRange={[100, 0]} portal={portalRef as any}>
                 <button
                   onClick={handleCopy}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 active:scale-95 cursor-pointer group"
+                  className="flex items-center bg-[#F8F3ED]/10 gap-2 px-4 py-2 rounded-lg transition-all duration-300 active:scale-95 cursor-pointer group"
                   style={{ pointerEvents: 'auto' }}
                 >
                   <span className="text-[#F8F3ED] text-[11px] font-serif tracking-wider whitespace-nowrap">
@@ -830,6 +830,7 @@ export function CinematicScene() {
     decorationTextures.text111,
     decorationTextures.text121,
     decorationTextures.text122,
+    decorationTextures.text123,
     decorationTextures.border12,
     decorationTextures.logo131,
   ], []);
@@ -1028,7 +1029,7 @@ export function CinematicScene() {
   const elementTextures = slideElementTextures.map(group => 
     loadedTextures.slice(pointer, pointer += group.length)
   );
-  const [orchidTex, goldMotifTex, petalTex, customOrnamentTex, logo1Tex, text11Tex, text12Tex, text13Tex, text14Tex, text15Tex, bunga1Tex, bunga2Tex, bunga3Tex, couple2Tex, border2Tex, text21Tex, text22Tex, text23Tex, surah3Tex, terjemah3Tex, bride4Tex, text41Tex, text42Tex, text43Tex, bride5Tex, text51Tex, text52Tex, text53Tex, border6Tex, text61Tex, text62Tex, text71Tex, text72Tex, text7AkadTex, text7AkadTglTex, text7ResepsiTex, text7ResepsiTglTex, text7AlamatTex, text7AlamatJlnTex, text81Tex, text82Tex, palette8Tex, text91Tex, text92Tex, text93Tex, text94Tex, image91Tex, image92Tex, text111Tex, text121Tex, text122Tex, border12Tex, logo131Tex] = loadedTextures.slice(pointer);
+  const [orchidTex, goldMotifTex, petalTex, customOrnamentTex, logo1Tex, text11Tex, text12Tex, text13Tex, text14Tex, text15Tex, bunga1Tex, bunga2Tex, bunga3Tex, couple2Tex, border2Tex, text21Tex, text22Tex, text23Tex, surah3Tex, terjemah3Tex, bride4Tex, text41Tex, text42Tex, text43Tex, bride5Tex, text51Tex, text52Tex, text53Tex, border6Tex, text61Tex, text62Tex, text71Tex, text72Tex, text7AkadTex, text7AkadTglTex, text7ResepsiTex, text7ResepsiTglTex, text7AlamatTex, text7AlamatJlnTex, text81Tex, text82Tex, palette8Tex, text91Tex, text92Tex, text93Tex, text94Tex, image91Tex, image92Tex, text111Tex, text121Tex, text122Tex, text123Tex, border12Tex, logo131Tex] = loadedTextures.slice(pointer);
 
   const introSlideConfig = [
     { type: 'SlideText', tex: logo1Tex, x: 1, y: 13.5, sizeMult: 0.1, delay: 2, multiplier: 0.12, zOffset: 2 },
@@ -1114,14 +1115,17 @@ export function CinematicScene() {
   ];
 
   const giftSlideConfig = [
-    { type: 'SlidePicture', tex: border12Tex, x: 0, y: -198.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlidePicture', tex: text121Tex, x: 0, y: -198.5, sizeMult: 0.45, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlidePicture', tex: text122Tex, x: 0, y: -200, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideCopyButton', x: 0, y: -214, multiplier: 0.12, zOffset: 2, copyText: '1832595092' }
+    { type: 'SlidePicture', tex: border12Tex, x: 0, y: -117.5, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlidePicture', tex: text121Tex, x: 0, y: -110.5, sizeMult: 0.45, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlidePicture', tex: text122Tex, x: -1, y: -115, sizeMult: 0.45, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideCopyButton', x: 1, y: -119, multiplier: 0.12, zOffset: 2, copyText: '1832595092' },
+    { type: 'SlidePicture', tex: border12Tex, x: 0, y: -140.5, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlidePicture', tex: text123Tex, x: 0, y: -131.5, sizeMult: 0.45, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideCopyButton', x: 1, y: -148.7, multiplier: 0.12, zOffset: 2, copyText: '7295194205' },
   ];
 
   const logoSlideConfig = [
-    { type: 'SlidePicture', tex: logo131Tex, x: 1, y: -250, sizeRaw: 1, delay: 1, multiplier: 0.1 },
+    { type: 'SlidePicture', tex: logo131Tex, x: 1, y: -260, sizeRaw: 1, delay: 1, multiplier: 0.1 },
   ]
 
   const renderSlideElement = (config: any, i: number, slideW: number, bgW: number, bgH: number) => {

@@ -128,7 +128,7 @@ export const WEDDING_CONFIG = {
     {
       id: "gift",
       background: "/background/09 Kata kata.JPG",
-      bgHeightMultiplier: 0.5, // Adjust height of the background (e.g., 0.8 to shrink, 1.2 to stretch vertically)
+      bgHeightMultiplier: 0.8, // Adjust height of the background (e.g., 0.8 to shrink, 1.2 to stretch vertically)
       bgWidthMultiplier: 1,  // Adjust width of the background (e.g., 0.8 to shrink, 1.2 to stretch horizontally)
       elements: [
       ]
