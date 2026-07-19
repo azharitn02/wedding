@@ -113,7 +113,7 @@ function ResponsiveBackground({
     );
 }
 
-function SlideOrnament({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0, zOffset = 0 }: any) {
+function SlideOrnament({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0, zOffset = 0, index }: any) {
     const ref = useRef<THREE.Mesh>(null);
     const scroll = useScroll();
     const { viewport } = useThree();
@@ -133,7 +133,10 @@ function SlideOrnament({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 
         if (ref.current.parent && !ref.current.parent.visible) return;
         const t = scroll.offset;
         const D = getScrollDist(viewport.height);
-        const parallaxOffset = t * D * multiplier;
+        const currentY = t * D;
+        const targetY = -getSlideY(index, viewport.height);
+        const distanceToTarget = currentY - targetY;
+        const parallaxOffset = distanceToTarget * multiplier;
 
         const time = state.clock.elapsedTime;
         ref.current.position.y = worldY + parallaxOffset + Math.cos(time * 0.6 + delay) * 0.05;
@@ -149,7 +152,7 @@ function SlideOrnament({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 
     );
 }
 
-function SlideText({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0, zOffset = 0, animation = true, link }: any) {
+function SlideText({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0, zOffset = 0, animation = true, link, index }: any) {
     const ref = useRef<THREE.Mesh>(null);
     const scroll = useScroll();
     const { viewport } = useThree();
@@ -169,7 +172,10 @@ function SlideText({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0, z
         if (ref.current.parent && !ref.current.parent.visible) return;
         const t = scroll.offset;
         const D = getScrollDist(viewport.height);
-        const parallaxOffset = t * D * multiplier;
+        const currentY = t * D;
+        const targetY = -getSlideY(index, viewport.height);
+        const distanceToTarget = currentY - targetY;
+        const parallaxOffset = distanceToTarget * multiplier;
 
         if (animation) {
             const time = state.clock.elapsedTime;
@@ -201,7 +207,7 @@ function SlideText({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0, z
     );
 }
 
-function SlideHeartbeat({ tex, x = 0, y = 0, bgW, bgH, size, delay = 0, multiplier = 0, zOffset = 0, beatSpeed = 3, beatDelay = 0 }: any) {
+function SlideHeartbeat({ tex, x = 0, y = 0, bgW, bgH, size, delay = 0, multiplier = 0, zOffset = 0, beatSpeed = 3, beatDelay = 0, index }: any) {
     const ref = useRef<THREE.Mesh>(null);
     const scroll = useScroll();
     const { viewport } = useThree();
@@ -221,7 +227,10 @@ function SlideHeartbeat({ tex, x = 0, y = 0, bgW, bgH, size, delay = 0, multipli
         if (ref.current.parent && !ref.current.parent.visible) return;
         const t = scroll.offset;
         const D = getScrollDist(viewport.height);
-        const parallaxOffset = t * D * multiplier;
+        const currentY = t * D;
+        const targetY = -getSlideY(index, viewport.height);
+        const distanceToTarget = currentY - targetY;
+        const parallaxOffset = distanceToTarget * multiplier;
 
         const time = state.clock.elapsedTime;
         ref.current.position.y = worldY + parallaxOffset + Math.cos(time * 0.6 + delay) * 0.05;
@@ -241,7 +250,7 @@ function SlideHeartbeat({ tex, x = 0, y = 0, bgW, bgH, size, delay = 0, multipli
     );
 }
 
-function SlideRotate({ tex, x = 0, y = 0, bgW, bgH, size, delay = 0, multiplier = 0, zOffset = 0, rotateSpeed = 2, rotateAmount = 0.15, pivot = "top", randomize = true }: any) {
+function SlideRotate({ tex, x = 0, y = 0, bgW, bgH, size, delay = 0, multiplier = 0, zOffset = 0, rotateSpeed = 2, rotateAmount = 0.15, pivot = "top", randomize = true, index }: any) {
     const ref = useRef<THREE.Group>(null);
     const scroll = useScroll();
     const { viewport } = useThree();
@@ -269,7 +278,10 @@ function SlideRotate({ tex, x = 0, y = 0, bgW, bgH, size, delay = 0, multiplier 
         if (ref.current.parent && !ref.current.parent.visible) return;
         const t = scroll.offset;
         const D = getScrollDist(viewport.height);
-        const parallaxOffset = t * D * multiplier;
+        const currentY = t * D;
+        const targetY = -getSlideY(index, viewport.height);
+        const distanceToTarget = currentY - targetY;
+        const parallaxOffset = distanceToTarget * multiplier;
 
         const time = state.clock.elapsedTime;
         ref.current.position.y = worldY + parallaxOffset;
@@ -295,7 +307,7 @@ function SlideRotate({ tex, x = 0, y = 0, bgW, bgH, size, delay = 0, multiplier 
     );
 }
 
-function SlidePicture({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0, zOffset = 0 }: any) {
+function SlidePicture({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0, zOffset = 0, index }: any) {
     const ref = useRef<THREE.Mesh>(null);
     const scroll = useScroll();
     const { viewport } = useThree();
@@ -315,7 +327,10 @@ function SlidePicture({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0
         if (ref.current.parent && !ref.current.parent.visible) return;
         const t = scroll.offset;
         const D = getScrollDist(viewport.height);
-        const parallaxOffset = t * D * multiplier;
+        const currentY = t * D;
+        const targetY = -getSlideY(index, viewport.height);
+        const distanceToTarget = currentY - targetY;
+        const parallaxOffset = distanceToTarget * multiplier;
         ref.current.position.y = worldY + parallaxOffset;
     });
 
@@ -327,7 +342,7 @@ function SlidePicture({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0
     );
 }
 
-function SlideHtml({ x = 0, y = 0, bgW, bgH, text, link, multiplier = 0, zOffset = 0, animation = "none", delay = 0, beatSpeed = 2, rotateSpeed = 2, rotateAmount = 0.1, randomize = true }: any) {
+function SlideHtml({ x = 0, y = 0, bgW, bgH, text, link, multiplier = 0, zOffset = 0, animation = "none", delay = 0, beatSpeed = 2, rotateSpeed = 2, rotateAmount = 0.1, randomize = true, index }: any) {
     const ref = useRef<THREE.Group>(null);
     const scroll = useScroll();
     const { viewport, gl } = useThree();
@@ -348,7 +363,10 @@ function SlideHtml({ x = 0, y = 0, bgW, bgH, text, link, multiplier = 0, zOffset
         if (ref.current.parent && !ref.current.parent.visible) return;
         const t = scroll.offset;
         const D = getScrollDist(viewport.height);
-        const parallaxOffset = t * D * multiplier;
+        const currentY = t * D;
+        const targetY = -getSlideY(index, viewport.height);
+        const distanceToTarget = currentY - targetY;
+        const parallaxOffset = distanceToTarget * multiplier;
         ref.current.position.y = worldY + parallaxOffset;
         
         const time = state.clock.elapsedTime;
@@ -393,7 +411,7 @@ function SlideHtml({ x = 0, y = 0, bgW, bgH, text, link, multiplier = 0, zOffset
     );
 }
 
-function SlideCopyButton({ x = 0, y = 0, bgW, bgH, text, copyText, multiplier = 0, zOffset = 0 }: any) {
+function SlideCopyButton({ x = 0, y = 0, bgW, bgH, text, copyText, multiplier = 0, zOffset = 0, index }: any) {
     const ref = useRef<THREE.Group>(null);
     const scroll = useScroll();
     const { viewport, gl } = useThree();
@@ -412,7 +430,10 @@ function SlideCopyButton({ x = 0, y = 0, bgW, bgH, text, copyText, multiplier = 
         if (ref.current.parent && !ref.current.parent.visible) return;
         const t = scroll.offset;
         const D = getScrollDist(viewport.height);
-        const parallaxOffset = t * D * multiplier;
+        const currentY = t * D;
+        const targetY = -getSlideY(index, viewport.height);
+        const distanceToTarget = currentY - targetY;
+        const parallaxOffset = distanceToTarget * multiplier;
         ref.current.position.y = worldY + parallaxOffset;
     });
 
@@ -467,7 +488,7 @@ function SlideCopyButton({ x = 0, y = 0, bgW, bgH, text, copyText, multiplier = 
     );
 }
 
-function SlideForm({ x = 0, y = 0, bgW, bgH, multiplier = 0, zOffset = 0 }: any) {
+function SlideForm({ x = 0, y = 0, bgW, bgH, multiplier = 0, zOffset = 0, index }: any) {
     const ref = useRef<THREE.Group>(null);
     const scroll = useScroll();
     const { viewport, gl } = useThree();
@@ -509,7 +530,10 @@ function SlideForm({ x = 0, y = 0, bgW, bgH, multiplier = 0, zOffset = 0 }: any)
         if (ref.current.parent && !ref.current.parent.visible) return;
         const t = scroll.offset;
         const D = getScrollDist(viewport.height);
-        const parallaxOffset = t * D * multiplier;
+        const currentY = t * D;
+        const targetY = -getSlideY(index, viewport.height);
+        const distanceToTarget = currentY - targetY;
+        const parallaxOffset = distanceToTarget * multiplier;
         ref.current.position.y = worldY + parallaxOffset;
 
         // Lazy load wishes when the form slide becomes visible
@@ -1046,95 +1070,95 @@ export function CinematicScene() {
   ];
 
   const couplesSlideConfig = [
-    { type: 'SlidePicture', tex: border2Tex, x: 1, y: -2, sizeRaw: 4, delay: 1, multiplier: 0.02 },
+    { type: 'SlidePicture', tex: border2Tex, x: 1, y: 0, sizeRaw: 4, delay: 1, multiplier: 0.02 },
     { type: 'SlidePicture', tex: couple2Tex, x: 1, y: -1, sizeRaw: 4, delay: 1, multiplier: 0.0 },
-    { type: 'SlideRotate', tex: bunga1Tex, x: 21, y: 3, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle"  },
-    { type: 'SlideRotate', tex: bunga2Tex, x: 23, y: -24.5, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle" },
-    { type: 'SlideRotate', tex: bunga3Tex, x: -19, y: -14, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle" },
-    { type: 'SlideText', tex: text21Tex, x: 1, y: 10, sizeMult: 0.85, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text22Tex, x: 1, y: 11, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text23Tex, x: -1, y: -24, sizeMult: 1, delay: 2, multiplier: 0.12, zOffset: 2},
+    { type: 'SlideRotate', tex: bunga1Tex, x: 21, y: 15, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle"  },
+    { type: 'SlideRotate', tex: bunga2Tex, x: 23, y: -12.5, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle" },
+    { type: 'SlideRotate', tex: bunga3Tex, x: -19, y: -2, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle" },
+    { type: 'SlideText', tex: text21Tex, x: 1, y: 22, sizeMult: 0.85, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text22Tex, x: 1, y: 23, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text23Tex, x: -1, y: -12, sizeMult: 1, delay: 2, multiplier: 0.12, zOffset: 2},
   ];
 
   const quoteSlideConfig = [
-    { type: 'SlideText', tex: surah3Tex, x: -8, y: -30, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: terjemah3Tex, x:8, y: -60, sizeMult: 0.58, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: surah3Tex, x: -8, y: 12, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: terjemah3Tex, x:8, y: -18, sizeMult: 0.58, delay: 2, multiplier: 0.12, zOffset: 2 },
   ]
 
   const brideSlideConfig = [
-    { type: 'SlidePicture', tex: bride4Tex, x: 1, y: -22, sizeRaw: 2.5, delay: 1, multiplier: 0.1 },
-    { type: 'SlideRotate', tex: text41Tex, x: 2.5, y: -1.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1, rotateAmount: 0.1, pivot: "top" },
-    { type: 'SlideText', tex: text42Tex, x: 1, y: -58, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text43Tex, x: 1, y: -63, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideHtml', x: 2, y: -58, sizeRaw: 0.5, delay: 1, multiplier: 0.12, link: "https://www.instagram.com/qonitaaf_?igsh=MWh6cDg4eWtvZjZtcQ%3D%3D&utm_source=qr", text: "@qonitaaf_" }
+    { type: 'SlidePicture', tex: bride4Tex, x: 1, y: 3, sizeRaw: 2.5, delay: 1, multiplier: 0.1 },
+    { type: 'SlideRotate', tex: text41Tex, x: 2.5, y: 28.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1, rotateAmount: 0.1, pivot: "top" },
+    { type: 'SlideText', tex: text42Tex, x: 1, y: -28, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text43Tex, x: 1, y: -33, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideHtml', x: 2, y: -28, sizeRaw: 0.5, delay: 1, multiplier: 0.12, link: "https://www.instagram.com/qonitaaf_?igsh=MWh6cDg4eWtvZjZtcQ%3D%3D&utm_source=qr", text: "@qonitaaf_" }
   ];
 
   const groomSlideConfig = [
-    { type: 'SlidePicture', tex: bride5Tex, x: 1, y: -35.5, sizeRaw: 2.57, delay: 1, multiplier: 0.1 },
-    { type: 'SlideRotate', tex: text51Tex, x: 1, y: -14, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1, rotateAmount: 0.1, pivot: "top" },
-    { type: 'SlideText', tex: text52Tex, x: 1, y: -73.5, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text53Tex, x: 1, y: -78.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideHtml', x: 2, y: -75, sizeRaw: 0.5, delay: 1, multiplier: 0.12, link: "https://www.instagram.com/bagjamulyana_?igsh=bno5NjY5ang4OGFm", text: "@bagjamulyana_" }
+    { type: 'SlidePicture', tex: bride5Tex, x: 1, y: -0.5, sizeRaw: 2.57, delay: 1, multiplier: 0.1 },
+    { type: 'SlideRotate', tex: text51Tex, x: 1, y: 28, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1, rotateAmount: 0.1, pivot: "top" },
+    { type: 'SlideText', tex: text52Tex, x: 1, y: -31.5, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text53Tex, x: 1, y: -36.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideHtml', x: 2, y: -33, sizeRaw: 0.5, delay: 1, multiplier: 0.12, link: "https://www.instagram.com/bagjamulyana_?igsh=bno5NjY5ang4OGFm", text: "@bagjamulyana_" }
   ];
 
   const daydateSlideConfig = [
-    { type: 'SlidePicture', tex: border6Tex, x: 1, y: -85.5, sizeRaw: 5.2, delay: 1, multiplier: 0.1 },
-    { type: 'SlideText', tex: text61Tex, x: 1, y: -102, sizeMult: 1.2, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideHeartbeat', tex: text62Tex, x: 1, y: -101.5, sizeMult: 0.75, delay: 2, multiplier: 0.12, zOffset: 2 }
+    { type: 'SlidePicture', tex: border6Tex, x: 1, y: -0.5, sizeRaw: 5.2, delay: 1, multiplier: 0.1 },
+    { type: 'SlideText', tex: text61Tex, x: 1, y: 0, sizeMult: 1.2, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideHeartbeat', tex: text62Tex, x: 1, y: 0.5, sizeMult: 0.75, delay: 2, multiplier: 0.12, zOffset: 2 }
   ];
 
   const rundownSlideConfig = [
     { type: 'SlidePicture', tex: text71Tex, x: 1, y: 22, sizeMult: 0.6, delay: 2, multiplier: 0, zOffset: 2 },
     { type: 'SlidePicture', tex: text72Tex, x: 1, y: -19, sizeMult: 0.55, delay: 2, multiplier: 0, zOffset: 2 },
-    { type: 'SlideText', tex: text7AkadTex, x: 0, y: -50, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7AkadTglTex, x: 1, y: -53, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7ResepsiTex, x: 0, y: -60.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7ResepsiTglTex, x: 0, y: -72.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7AlamatTex, x: 0, y: -77, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7AlamatJlnTex, x: 1, y: -81.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false, link: "https://maps.app.goo.gl/DL9GCEW3aqSUiKGh9" },
-    { type: 'SlideHtml', x: 1, y: -90.5, sizeRaw: 0.2, delay: 1, multiplier: 0.12, link: "https://maps.app.goo.gl/DL9GCEW3aqSUiKGh9", text: "Open Maps" },
-    { type: 'SlideRotate', tex: bunga1Tex, x: 27, y: -38.5, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" },
-    { type: 'SlideRotate', tex: bunga3Tex, x: -27, y: -59, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" }
+    { type: 'SlideText', tex: text7AkadTex, x: 0, y: 10, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    { type: 'SlideText', tex: text7AkadTglTex, x: 1, y: 7, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    { type: 'SlideText', tex: text7ResepsiTex, x: 0, y: -0.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    { type: 'SlideText', tex: text7ResepsiTglTex, x: 0, y: -12.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    { type: 'SlideText', tex: text7AlamatTex, x: 0, y: -17, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    { type: 'SlideText', tex: text7AlamatJlnTex, x: 1, y: -21.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false, link: "https://maps.app.goo.gl/DL9GCEW3aqSUiKGh9" },
+    { type: 'SlideHtml', x: 1, y: -30.5, sizeRaw: 0.2, delay: 1, multiplier: 0.12, link: "https://maps.app.goo.gl/DL9GCEW3aqSUiKGh9", text: "Open Maps" },
+    { type: 'SlideRotate', tex: bunga1Tex, x: 27, y: 21.5, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" },
+    { type: 'SlideRotate', tex: bunga3Tex, x: -27, y: 1, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" }
   ];
 
-  const dresscodeSlideConfig = [
-    { type: 'SlidePicture', tex: palette8Tex, x: 0, y: -143, sizeRaw: 3.5, delay: 1, multiplier: 0.1 },
-    { type: 'SlidePicture', tex: text81Tex, x: 0, y: -125, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlidePicture', tex: text82Tex, x: 1, y: -151, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 }
-  ];
+  // const dresscodeSlideConfig = [
+  //   { type: 'SlidePicture', tex: palette8Tex, x: 0, y: -25, sizeRaw: 3.5, delay: 1, multiplier: 0.1 },
+  //   { type: 'SlidePicture', tex: text81Tex, x: 0, y: 15, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
+  //   { type: 'SlidePicture', tex: text82Tex, x: 1, y: -10, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 }
+  // ];
 
   const storySlideConfig = [
-    { type: 'SlideText', tex: image91Tex, x: 1, y: -66.5, sizeRaw: 4, delay: 1, multiplier: 0.1 },
-    { type: 'SlideText', tex: image92Tex, x: 1, y: -99.3, sizeRaw: 4, delay: 1, multiplier: 0.15 },
-    { type: 'SlideText', tex: text91Tex, x: 1, y: -55.5, sizeMult: 0.8, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text92Tex, x: 20, y: -116.5, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text93Tex, x: -12, y: -88.5, sizeMult: 0.7, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text94Tex, x: 1, y: -103.5, sizeMult: 1.5, delay: 2, multiplier: 0.12, zOffset: 2 }
+    { type: 'SlideText', tex: image91Tex, x: 1, y: -1.5, sizeRaw: 4, delay: 1, multiplier: 0.1 },
+    { type: 'SlideText', tex: image92Tex, x: 1, y: -1.8, sizeRaw: 4, delay: 1, multiplier: 0.15 },
+    { type: 'SlideText', tex: text91Tex, x: 1, y: 22.5, sizeMult: 0.8, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text92Tex, x: 20, y: -38.5, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text93Tex, x: -12, y: -10.5, sizeMult: 0.7, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text94Tex, x: 1, y: -25.5, sizeMult: 1.5, delay: 2, multiplier: 0.12, zOffset: 2 }
   ];
 
   const rsvpSlideConfig = [
-    { type: 'SlideText', tex: text111Tex, x: -0, y: -62.5, sizeMult: 0.8, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideForm', x: 1, y: -94.5, delay: undefined, multiplier: 0.12, zOffset: 2 }
+    { type: 'SlideText', tex: text111Tex, x: -0, y: 27.5, sizeMult: 0.8, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideForm', x: 1, y: -4.5, delay: undefined, multiplier: 0.12, zOffset: 2 }
   ];
 
-  const giftSlideConfig = [
-    { type: 'SlidePicture', tex: border12Tex, x: 0, y: -117.5, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlidePicture', tex: text121Tex, x: 0, y: -110.5, sizeMult: 0.45, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlidePicture', tex: text122Tex, x: -1, y: -115, sizeMult: 0.45, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideCopyButton', x: 1, y: -119, multiplier: 0.12, zOffset: 2, copyText: '1832595092' },
-    { type: 'SlidePicture', tex: border12Tex, x: 0, y: -140.5, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlidePicture', tex: text123Tex, x: 0, y: -131.5, sizeMult: 0.45, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideCopyButton', x: 1, y: -148.7, multiplier: 0.12, zOffset: 2, copyText: '7295194205' },
-  ];
+  // const giftSlideConfig = [
+  //   { type: 'SlidePicture', tex: border12Tex, x: 0, y: 8.5, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2 },
+  //   { type: 'SlidePicture', tex: text121Tex, x: 0, y: 15.5, sizeMult: 0.45, delay: 2, multiplier: 0.12, zOffset: 2 },
+  //   { type: 'SlidePicture', tex: text122Tex, x: -1, y: 11, sizeMult: 0.45, delay: 2, multiplier: 0.12, zOffset: 2 },
+  //   { type: 'SlideCopyButton', x: 1, y: 7, multiplier: 0.12, zOffset: 2, copyText: '1832595092' },
+  //   { type: 'SlidePicture', tex: border12Tex, x: 0, y: -14.5, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2 },
+  //   { type: 'SlidePicture', tex: text123Tex, x: 0, y: -5.5, sizeMult: 0.45, delay: 2, multiplier: 0.12, zOffset: 2 },
+  //   { type: 'SlideCopyButton', x: 1, y: -22.7, multiplier: 0.12, zOffset: 2, copyText: '7295194205' },
+  // ];
 
   const logoSlideConfig = [
-    { type: 'SlidePicture', tex: logo131Tex, x: 1, y: -260, sizeRaw: 1, delay: 1, multiplier: 0.1 },
+    { type: 'SlidePicture', tex: logo131Tex, x: 1, y: 38.3, sizeRaw: 1, delay: 1, multiplier: 0.1 },
   ]
 
-  const renderSlideElement = (config: any, i: number, slideW: number, bgW: number, bgH: number) => {
+  const renderSlideElement = (config: any, i: number, slideW: number, bgW: number, bgH: number, index: number) => {
     const zOffset = config.zOffset !== undefined ? config.zOffset : (config.type.includes('Text') || config.type.includes('Rotate') ? 2 : 0);
     const size = config.sizeRaw !== undefined ? config.sizeRaw : slideW * (config.sizeMult || 1);
-    const props = { bgW, bgH, size, zOffset, ...config };
+    const props = { bgW, bgH, size, zOffset, index, ...config };
     
     switch (config.type) {
       case 'SlideText': return <SlideText key={i} {...props} />;
@@ -1204,7 +1228,7 @@ export function CinematicScene() {
               ))}
               {slide.id === "intro" && (
                 <>
-                  {introSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                  {introSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                   {/* Dynamic Guest Name Overlay */}
                   {guestName && (
                     <group position={[0, 2.9, LAYERS.TEXT + 2]}> {/* Adjust Y position to fit layout */}
@@ -1224,57 +1248,57 @@ export function CinematicScene() {
               )}
               {slide.id === "couples" && (
                 <>
-                  {couplesSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                  {couplesSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
               )}
               {slide.id === "quote" && (
                 <>
-                  {quoteSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                  {quoteSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
               )}
               {slide.id === "bride" && (
                 <>
-                  {brideSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                  {brideSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
               )}
               {slide.id === "groom" && (
                 <>
-                  {groomSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                  {groomSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
               )}
               {slide.id === "daydate" && (
                 <>
-                  {daydateSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                  {daydateSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
               )}
               {slide.id === "rundown" && (
                 <>
-                  {rundownSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                  {rundownSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
               )}
-              {slide.id === "dresscode" && (
+              {/* {slide.id === "dresscode" && (
                 <>
-                  {dresscodeSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                  {dresscodeSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
-              )}
+              )} */}
               {slide.id === "stories" && (
                 <>
-                  {storySlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                  {storySlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
               )}
               {slide.id === "rsvp" && (
                 <>
-                  {rsvpSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                  {rsvpSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
               )}
-              {slide.id === "gift" && (
+              {/* {slide.id === "gift" && (
                 <>
-                  {giftSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                  {giftSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
-              )}
+              )} */}
               {slide.id === "thanks" && (
                 <>
-                  {logoSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH))}
+                  {logoSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
               )}
             </group>
