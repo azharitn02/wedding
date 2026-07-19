@@ -4,20 +4,32 @@ import { sql } from '@/lib/db';
 export const dynamic = 'force-dynamic';
 
 // Initialize the database table if it doesn't exist 
+let isDbInitialized = false;
+let dbInitPromise: Promise<void> | null = null;
+
 const initDb = async () => {
-    try {
-        await sql`
-            CREATE TABLE IF NOT EXISTS guestbook_dhisa (
-                id SERIAL PRIMARY KEY,
-                name TEXT NOT NULL,
-                message TEXT NOT NULL,
-                attending BOOLEAN DEFAULT TRUE,
-                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-            );
-        `;
-    } catch (error) {
-        console.error('Error initializing database:', error);
-    }
+    if (isDbInitialized) return;
+    if (dbInitPromise) return dbInitPromise;
+
+    dbInitPromise = (async () => {
+        try {
+            await sql`
+                CREATE TABLE IF NOT EXISTS guestbook_dhisa (
+                    id SERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    message TEXT NOT NULL,
+                    attending BOOLEAN DEFAULT TRUE,
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+                );
+            `;
+            isDbInitialized = true;
+        } catch (error) {
+            console.error('Error initializing database:', error);
+            dbInitPromise = null; // Reset to allow retry on next request if initialization failed
+        }
+    })();
+
+    return dbInitPromise;
 };
 
 export async function GET(request: NextRequest) {

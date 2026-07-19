@@ -484,25 +484,17 @@ function SlideForm({ x = 0, y = 0, bgW, bgH, multiplier = 0, zOffset = 0 }: any)
     const [wishes, setWishes] = useState<any[]>([]);
     const [currentWishIndex, setCurrentWishIndex] = useState(0);
     const [activeTab, setActiveTab] = useState<'rsvp' | 'wishes'>('rsvp');
+    const hasFetched = useRef(false);
 
     const portalRef = useRef<HTMLElement | null>(null);
     if (!portalRef.current && gl.domElement) {
         portalRef.current = gl.domElement.parentElement;
     }
 
-    useFrame(() => {
-        if (!ref.current || !scroll) return;
-        if (ref.current.parent && !ref.current.parent.visible) return;
-        const t = scroll.offset;
-        const D = getScrollDist(viewport.height);
-        const parallaxOffset = t * D * multiplier;
-        ref.current.position.y = worldY + parallaxOffset;
-    });
-
     const fetchWishes = async () => {
         try {
             const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
-            const res = await fetch(`${basePath}/api/guestbook`);
+            const res = await fetch(`${basePath}/api/guestbook/`);
             if (res.ok) {
                 const data = await res.json();
                 setWishes(data || []);
@@ -512,9 +504,20 @@ function SlideForm({ x = 0, y = 0, bgW, bgH, multiplier = 0, zOffset = 0 }: any)
         }
     };
 
-    useEffect(() => {
-        fetchWishes();
-    }, []);
+    useFrame(() => {
+        if (!ref.current || !scroll) return;
+        if (ref.current.parent && !ref.current.parent.visible) return;
+        const t = scroll.offset;
+        const D = getScrollDist(viewport.height);
+        const parallaxOffset = t * D * multiplier;
+        ref.current.position.y = worldY + parallaxOffset;
+
+        // Lazy load wishes when the form slide becomes visible
+        if (!hasFetched.current) {
+            hasFetched.current = true;
+            fetchWishes();
+        }
+    });
 
     useEffect(() => {
         if (wishes.length <= 1) return;
@@ -547,7 +550,7 @@ function SlideForm({ x = 0, y = 0, bgW, bgH, multiplier = 0, zOffset = 0 }: any)
 
         try {
             const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
-            const res = await fetch(`${basePath}/api/guestbook`, {
+            const res = await fetch(`${basePath}/api/guestbook/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

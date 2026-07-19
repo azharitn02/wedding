@@ -17,6 +17,25 @@ export function LoadingScreen() {
     "Symphony of love is tuning..."
   ], []);
 
+  // 1. Handle Back/Forward Cache Restorations
+  useEffect(() => {
+    const handlePageShow = (event) => {
+      // If the page was restored from bfcache
+      if (event.persisted) {
+        // Option A: Just keep it hidden cleanly
+        setShow(false);
+        window.dispatchEvent(new Event('weddingLoaded'));
+        
+        // Option B: If you WANT them to see a quick 1-second elegant reload animation:
+        // setDelayedProgress(0);
+        // setShow(true);
+      }
+    };
+
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, []);
+
   // Cycle romantic phrases gently
   useEffect(() => {
     const interval = setInterval(() => {
@@ -25,15 +44,13 @@ export function LoadingScreen() {
     return () => clearInterval(interval);
   }, [loadingPhrases.length]);
 
-  // Smooth progress bar dampening (interpolation) for luxury feel
+  // Smooth progress bar dampening
   useEffect(() => {
     const interval = setInterval(() => {
       setDelayedProgress((prev) => {
         if (prev < progress) {
-          // Slowly catch up to progress
           return Math.min(prev + 1.2, progress);
         } else if (progress === 100 && prev < 100) {
-          // Finish the loading animation smoothly
           return Math.min(prev + 1.5, 100);
         }
         return prev;
@@ -50,19 +67,12 @@ export function LoadingScreen() {
       }
       const timer = setTimeout(() => {
         setShow(false);
-      }, 1200); // 1.2s delay for maximum impact of the final reveal
+      }, 1200);
       return () => clearTimeout(timer);
     }
   }, [delayedProgress]);
 
   if (!show) return null;
-
-  // SVG Circular math
-  const radius = 60;
-  const stroke = 3;
-  const normalizedRadius = radius - stroke * 2;
-  const circumference = normalizedRadius * 2 * Math.PI;
-  const strokeDashoffset = circumference - (delayedProgress / 100) * circumference;
 
   return (
     <div 
@@ -70,36 +80,21 @@ export function LoadingScreen() {
         delayedProgress >= 100 ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
-      {/* Premium Ambient Background Glows matching the wedding config */}
+      {/* ... keeping all your beautiful SVG and premium styling identical ... */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-[#4B182B]/20 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-[#A8B8A6]/10 blur-[120px] pointer-events-none" />
 
-      {/* Loader Container */}
       <div className="relative flex flex-col items-center max-w-sm px-6 text-center select-none">
-        
-        {/* Circular Progress Ring with Monogram */}
         <div className="relative w-40 h-40 flex items-center justify-center mb-8">
-          
-          
-
-          {/* Central Monogram (Main Selection Color + Sage Green Subtext) */}
-          {/* <div className="flex flex-col items-center justify-center z-10">
-            <span className="text-[#4B182B] font-serif text-3xl font-light tracking-widest mt-1">Q & B</span>
-            <span className="text-[#A8B8A6] font-serif text-[10px] tracking-[0.25em] uppercase mt-2">Wedding</span>
-          </div> */}
-
-          {/* Percentage Indicator Badge (Selection background + Ivory text) */}
           <div className="absolute bottom-0 text-[11px] font-sans tracking-widest text-[#F8F3ED] bg-[#4B182B] px-3 py-0.5 border border-[#4B182B]/35 rounded-full shadow-lg shadow-[#4B182B]/10">
             {Math.floor(delayedProgress)}%
           </div>
         </div>
 
-        {/* Title & Romantic Subtitles */}
         <h1 className="text-[#F8F3ED] font-serif text-lg tracking-[0.2em] uppercase font-light mb-3">
-          Qonita & Bagja
+          Qonita &amp; Bagja
         </h1>
 
-        {/* Dynamic Glowing Text Cross-fader (Sage Subtext Color) */}
         <div className="h-6 overflow-hidden relative w-64 flex items-center justify-center">
           {loadingPhrases.map((phrase, idx) => (
             <p
@@ -116,7 +111,6 @@ export function LoadingScreen() {
         </div>
       </div>
       
-      {/* Bottom copyright/visual ornament */}
       <div className="absolute bottom-8 flex flex-col items-center opacity-30 tracking-[0.4em] uppercase text-[8px] text-[#F8F3ED]">
         <span>Loading Experience</span>
       </div>
