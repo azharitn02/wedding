@@ -82,7 +82,7 @@ const rawDecorationTextures = {
   //slides8
   text81: "slide8/Tulisan1.png",
   text82: "slide8/Tulisan2.png",
-  palette8: "slide8/IMG1.PNG",
+  palette8: "slide8/IMG1.png",
   //slides9
   text91: "slide9/Tulisan1.png",
   text92: "slide9/Tulisan21.png",
