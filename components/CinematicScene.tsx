@@ -202,7 +202,7 @@ function SlideText({ tex, x = 0, y = 0, bgW, bgH, size, delay, multiplier = 0, z
             onPointerOut={handlePointerOut}
         >
             <planeGeometry args={[size, size / aspect]} />
-            <meshBasicMaterial map={tex} transparent toneMapped={true} />
+            <meshBasicMaterial map={tex} transparent toneMapped={false} />
         </mesh>
     );
 }
@@ -1130,8 +1130,8 @@ export function CinematicScene() {
   ];
 
   const storySlideConfig = [
-    { type: 'SlidePicture', tex: bride5Tex, x: 18, y: -10.5, sizeRaw: 1.7, delay: 1, multiplier: 0.1 },
-    { type: 'SlidePicture', tex: bride4Tex, x: -15, y: -3.8, sizeRaw: 1.7, delay: 1.5, multiplier: 0.15 },
+    { type: 'SlideText', tex: bride5Tex, x: 18, y: -10.5, sizeRaw: 1.7, delay: 1, multiplier: 0.1 },
+    { type: 'SlideText', tex: bride4Tex, x: -15, y: -3.8, sizeRaw: 1.7, delay: 1.5, multiplier: 0.15 },
     { type: 'SlideText', tex: text91Tex, x: 1, y: 22.5, sizeMult: 0.8, delay: 1.5, multiplier: 0.12, zOffset: 2 },
     { type: 'SlideText', tex: text92Tex, x: -19, y: -22.5, sizeMult: 0.7, delay: 2.3, multiplier: 0.12, zOffset: 2 },
     { type: 'SlideText', tex: text94Tex, x: -1, y: -26.5, sizeMult: 0.5, delay: 2.5, multiplier: 0.12, zOffset: 2 },
