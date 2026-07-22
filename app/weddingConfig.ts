@@ -71,7 +71,7 @@ export const WEDDING_CONFIG = {
     },
     {
       id: "rundown",
-      background: "/background/07 Akad Nikah2….JPG",
+      background: "/background/07AkadNikah2.jpg",
       elements: [
       ]
     },
