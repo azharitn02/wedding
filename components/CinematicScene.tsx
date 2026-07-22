@@ -1113,7 +1113,7 @@ export function CinematicScene() {
     { type: 'SlidePicture', tex: text72Tex, x: 1, y: -19, sizeMult: 0.55, delay: 2, multiplier: 0, zOffset: 2 },
     { type: 'SlideText', tex: text7OrtuTex, x: 2, y: 15.8, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
     // { type: 'SlideText', tex: text7OrtuTglTex, x: 1, y: 7, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7AkadTex, x: 1.5, y: -0.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    { type: 'SlideText', tex: text7AkadTex, x: 1.5, y: -1.3, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
     { type: 'SlideText', tex: text7AkadTglTex, x: 1.5, y: -1.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
     { type: 'SlideText', tex: text7ResepsiTex, x: 1.5, y: -18, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
     { type: 'SlideText', tex: text7ResepsiTglTex, x: 1.5, y: -22.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
