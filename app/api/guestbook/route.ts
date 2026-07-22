@@ -14,7 +14,7 @@ const initDb = async () => {
     dbInitPromise = (async () => {
         try {
             await sql`
-                CREATE TABLE IF NOT EXISTS guestbook_dhisa (
+                CREATE TABLE IF NOT EXISTS guestbook_wedding_2 (
                     id SERIAL PRIMARY KEY,
                     name TEXT NOT NULL,
                     message TEXT NOT NULL,
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
     
     try {
         await initDb();
-        const result = await sql`SELECT * FROM guestbook_dhisa ORDER BY created_at DESC;`;
+        const result = await sql`SELECT * FROM guestbook_wedding_2 ORDER BY created_at DESC;`;
         return NextResponse.json(result);
     } catch (error: any) {
         console.error('Error fetching guestbook:', error);
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
         }
 
         const result = await sql`
-            INSERT INTO guestbook_dhisa (name, message, attending)
+            INSERT INTO guestbook_wedding_2 (name, message, attending)
             VALUES (${name}, ${message}, ${attending})
             RETURNING *;
         `;

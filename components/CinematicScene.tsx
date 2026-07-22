@@ -394,13 +394,13 @@ function SlideHtml({ x = 0, y = 0, bgW, bgH, text, link, multiplier = 0, zOffset
             <Html center zIndexRange={[100, 0]} portal={portalRef as any}>
                 <a 
                   href={link} 
-                  target="_blank" 
+                  target="_blank"
                   rel="noopener noreferrer"
-                  className={`px-5 py-2 text-xs font-sans tracking-widest hover:bg-[#32101c]/80 transition-all rounded whitespace-nowrap flex items-center gap-2 ${link.includes("maps") ? "text-[#4B182B]" : "text-[#F8F3ED]"}`}
+                  className={`px-5 py-2 text-xs font-semibold underline decoration-[#4B182B] underline-offset-4 font-sans tracking-widest hover:bg-[#4B182B]/80 transition-all rounded whitespace-nowrap flex items-center gap-2 ${link.includes("maps") ? "text-[#4B182B]" : "text-[#F8F3ED]"}`}
                   style={{ pointerEvents: 'auto' }}
                 >
                   {isMap ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4B182B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                   ) : (
                     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                   )}
@@ -806,10 +806,10 @@ export function CinematicScene() {
   const texturePaths = useMemo(() => [
     ...backgroundTextures,
     ...slideElementTextures.flat(),
-    decorationTextures.orchid,
-    decorationTextures.goldMotif,
-    decorationTextures.petal,
-    decorationTextures.custom,
+    // decorationTextures.orchid,
+    // decorationTextures.goldMotif,
+    // decorationTextures.petal,
+    // decorationTextures.custom,
     decorationTextures.logo1,
     decorationTextures.text11,
     decorationTextures.text12,
@@ -839,12 +839,12 @@ export function CinematicScene() {
     decorationTextures.text62,
     decorationTextures.text71,
     decorationTextures.text72,
+    decorationTextures.text7Ortu,
+    decorationTextures.text7OrtuTgl,
     decorationTextures.text7Akad,
     decorationTextures.text7AkadTgl,
     decorationTextures.text7Resepsi,
     decorationTextures.text7ResepsiTgl,
-    decorationTextures.text7Alamat,
-    decorationTextures.text7AlamatJln,
     decorationTextures.text81,
     decorationTextures.text82,
     decorationTextures.palette8,
@@ -869,9 +869,10 @@ export function CinematicScene() {
     const isMobile = typeof navigator !== 'undefined' && /Mobi|Android|iPhone/i.test(navigator.userAgent);
     
     loadedTextures.forEach(tex => {
-      // Set to 1 on mobile (turns off filtering over-computation), 4 on Desktop
-      tex.anisotropy = isMobile ? 1 : 4; 
-      tex.minFilter = THREE.LinearMipmapLinearFilter;
+      // Set to 1 on mobile (turns off filtering over-computation), 2 on Desktop
+      tex.anisotropy = isMobile ? 1 : 2; 
+      tex.generateMipmaps = false; // Prevents heavy memory usage and long loading time
+      tex.minFilter = THREE.LinearFilter; // LinearFilter avoids mipmap generation
       tex.magFilter = THREE.LinearFilter;
       tex.colorSpace = THREE.SRGBColorSpace;
       tex.needsUpdate = true;
@@ -1056,7 +1057,7 @@ export function CinematicScene() {
   const elementTextures = slideElementTextures.map(group => 
     loadedTextures.slice(pointer, pointer += group.length)
   );
-  const [orchidTex, goldMotifTex, petalTex, customOrnamentTex, logo1Tex, text11Tex, text12Tex, text13Tex, text14Tex, text15Tex, bunga1Tex, bunga2Tex, bunga3Tex, couple2Tex, border2Tex, text21Tex, text22Tex, text23Tex, surah3Tex, terjemah3Tex, bride4Tex, text41Tex, text42Tex, text43Tex, bride5Tex, text51Tex, text52Tex, text53Tex, border6Tex, text61Tex, text62Tex, text71Tex, text72Tex, text7AkadTex, text7AkadTglTex, text7ResepsiTex, text7ResepsiTglTex, text7AlamatTex, text7AlamatJlnTex, text81Tex, text82Tex, palette8Tex, text91Tex, text92Tex, text93Tex, text94Tex, image91Tex, image92Tex, text111Tex, text121Tex, text122Tex, text123Tex, border12Tex, logo131Tex] = loadedTextures.slice(pointer);
+  const [ logo1Tex, text11Tex, text12Tex, text13Tex, text14Tex, text15Tex, bunga1Tex, bunga2Tex, bunga3Tex, couple2Tex, border2Tex, text21Tex, text22Tex, text23Tex, surah3Tex, terjemah3Tex, bride4Tex, text41Tex, text42Tex, text43Tex, bride5Tex, text51Tex, text52Tex, text53Tex, border6Tex, text61Tex, text62Tex, text71Tex, text72Tex, text7OrtuTex, text7OrtuTglTex, text7AkadTex, text7AkadTglTex, text7ResepsiTex, text7ResepsiTglTex, text81Tex, text82Tex, palette8Tex, text91Tex, text92Tex, text93Tex, text94Tex, image91Tex, image92Tex, text111Tex, text121Tex, text122Tex, text123Tex, border12Tex, logo131Tex] = loadedTextures.slice(pointer);
 
   const introSlideConfig = [
     { type: 'SlideText', tex: logo1Tex, x: 1, y: 13.5, sizeMult: 0.1, delay: 2, multiplier: 0.12, zOffset: 2 },
@@ -1077,7 +1078,7 @@ export function CinematicScene() {
     { type: 'SlideRotate', tex: bunga3Tex, x: -19, y: -2, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle" },
     { type: 'SlideText', tex: text21Tex, x: 1, y: 22, sizeMult: 0.85, delay: 2, multiplier: 0.12, zOffset: 2 },
     { type: 'SlideText', tex: text22Tex, x: 1, y: 23, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text23Tex, x: -1, y: -12, sizeMult: 1, delay: 2, multiplier: 0.12, zOffset: 2},
+    { type: 'SlideText', tex: text23Tex, x: -1, y: -29, sizeMult: 0.8, delay: 2, multiplier: 0.12, zOffset: 2},
   ];
 
   const quoteSlideConfig = [
@@ -1086,54 +1087,55 @@ export function CinematicScene() {
   ]
 
   const brideSlideConfig = [
-    { type: 'SlidePicture', tex: bride4Tex, x: 1, y: 3, sizeRaw: 2.5, delay: 1, multiplier: 0.1 },
+    { type: 'SlidePicture', tex: bride4Tex, x: 1, y: -2.5, sizeRaw: 2.5, delay: 1, multiplier: 0.1 },
     { type: 'SlideRotate', tex: text41Tex, x: 2.5, y: 28.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1, rotateAmount: 0.1, pivot: "top" },
     { type: 'SlideText', tex: text42Tex, x: 1, y: -28, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
     { type: 'SlideText', tex: text43Tex, x: 1, y: -33, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideHtml', x: 2, y: -28, sizeRaw: 0.5, delay: 1, multiplier: 0.12, link: "https://www.instagram.com/qonitaaf_?igsh=MWh6cDg4eWtvZjZtcQ%3D%3D&utm_source=qr", text: "@qonitaaf_" }
+    // { type: 'SlideHtml', x: 2, y: -28, sizeRaw: 0.5, delay: 1, multiplier: 0.12, link: "https://www.instagram.com/qonitaaf_?igsh=MWh6cDg4eWtvZjZtcQ%3D%3D&utm_source=qr", text: "@qonitaaf_" }
   ];
 
   const groomSlideConfig = [
-    { type: 'SlidePicture', tex: bride5Tex, x: 1, y: -0.5, sizeRaw: 2.57, delay: 1, multiplier: 0.1 },
+    { type: 'SlidePicture', tex: bride5Tex, x: 1, y: -2.5, sizeRaw: 2.57, delay: 1, multiplier: 0.1 },
     { type: 'SlideRotate', tex: text51Tex, x: 1, y: 28, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1, rotateAmount: 0.1, pivot: "top" },
     { type: 'SlideText', tex: text52Tex, x: 1, y: -31.5, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
     { type: 'SlideText', tex: text53Tex, x: 1, y: -36.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideHtml', x: 2, y: -33, sizeRaw: 0.5, delay: 1, multiplier: 0.12, link: "https://www.instagram.com/bagjamulyana_?igsh=bno5NjY5ang4OGFm", text: "@bagjamulyana_" }
+    // { type: 'SlideHtml', x: 2, y: -33, sizeRaw: 0.5, delay: 1, multiplier: 0.12, link: "https://www.instagram.com/bagjamulyana_?igsh=bno5NjY5ang4OGFm", text: "@bagjamulyana_" }
   ];
 
   const daydateSlideConfig = [
     { type: 'SlidePicture', tex: border6Tex, x: 1, y: -0.5, sizeRaw: 5.2, delay: 1, multiplier: 0.1 },
-    { type: 'SlideText', tex: text61Tex, x: 1, y: 0, sizeMult: 1.2, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideHeartbeat', tex: text62Tex, x: 1, y: 0.5, sizeMult: 0.75, delay: 2, multiplier: 0.12, zOffset: 2 }
+    { type: 'SlideText', tex: text61Tex, x: 1, y: 0, sizeMult: 1.2, delay: 0.2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideHeartbeat', tex: text62Tex, x: 1, y: -1, sizeMult: 0.65, delay: 0.1, multiplier: 0.12, zOffset: 2 }
   ];
 
   const rundownSlideConfig = [
     { type: 'SlidePicture', tex: text71Tex, x: 1, y: 22, sizeMult: 0.6, delay: 2, multiplier: 0, zOffset: 2 },
     { type: 'SlidePicture', tex: text72Tex, x: 1, y: -19, sizeMult: 0.55, delay: 2, multiplier: 0, zOffset: 2 },
-    { type: 'SlideText', tex: text7AkadTex, x: 0, y: 10, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7AkadTglTex, x: 1, y: 7, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7ResepsiTex, x: 0, y: -0.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7ResepsiTglTex, x: 0, y: -12.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7AlamatTex, x: 0, y: -17, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7AlamatJlnTex, x: 1, y: -21.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false, link: "https://maps.app.goo.gl/DL9GCEW3aqSUiKGh9" },
-    { type: 'SlideHtml', x: 1, y: -30.5, sizeRaw: 0.2, delay: 1, multiplier: 0.12, link: "https://maps.app.goo.gl/DL9GCEW3aqSUiKGh9", text: "Open Maps" },
+    { type: 'SlideText', tex: text7OrtuTex, x: 2, y: 14.8, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    // { type: 'SlideText', tex: text7OrtuTglTex, x: 1, y: 7, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    { type: 'SlideText', tex: text7AkadTex, x: 1.5, y: -5.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    { type: 'SlideText', tex: text7AkadTglTex, x: 1.5, y: -4.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    { type: 'SlideText', tex: text7ResepsiTex, x: 1.5, y: -20, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    { type: 'SlideText', tex: text7ResepsiTglTex, x: 1.5, y: -23.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    // { type: 'SlideHtml', x: 1, y: -30.5, sizeRaw: 0.2, delay: 1, multiplier: 0.12, link: "https://maps.app.goo.gl/k8Vzo88j5rpBji9U6?g_st=iw", text: "Open Maps" },
     { type: 'SlideRotate', tex: bunga1Tex, x: 27, y: 21.5, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" },
     { type: 'SlideRotate', tex: bunga3Tex, x: -27, y: 1, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" }
   ];
 
-  // const dresscodeSlideConfig = [
-  //   { type: 'SlidePicture', tex: palette8Tex, x: 0, y: -25, sizeRaw: 3.5, delay: 1, multiplier: 0.1 },
-  //   { type: 'SlidePicture', tex: text81Tex, x: 0, y: 15, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
-  //   { type: 'SlidePicture', tex: text82Tex, x: 1, y: -10, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 }
-  // ];
+  const dresscodeSlideConfig = [
+    { type: 'SlidePicture', tex: palette8Tex, x: 1, y: 0, sizeRaw: 3.5, delay: 1, multiplier: 0.1 },
+    { type: 'SlideHtml', x: 1, y: -13.5, sizeRaw: 0.5, delay: 1, multiplier: 0.12, link: "https://maps.app.goo.gl/k8Vzo88j5rpBji9U6?g_st=iw", text: "Open Maps" },
+    // { type: 'SlidePicture', tex: text81Tex, x: 0, y: 15, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
+    // { type: 'SlidePicture', tex: text82Tex, x: 1, y: -10, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2 }
+  ];
 
   const storySlideConfig = [
-    { type: 'SlideText', tex: image91Tex, x: 1, y: -1.5, sizeRaw: 4, delay: 1, multiplier: 0.1 },
-    { type: 'SlideText', tex: image92Tex, x: 1, y: -1.8, sizeRaw: 4, delay: 1, multiplier: 0.15 },
-    { type: 'SlideText', tex: text91Tex, x: 1, y: 22.5, sizeMult: 0.8, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text92Tex, x: 20, y: -38.5, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text93Tex, x: -12, y: -10.5, sizeMult: 0.7, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text94Tex, x: 1, y: -25.5, sizeMult: 1.5, delay: 2, multiplier: 0.12, zOffset: 2 }
+    { type: 'SlideText', tex: bride4Tex, x: 18, y: -10.5, sizeRaw: 1.7, delay: 1, multiplier: 0.1 },
+    { type: 'SlideText', tex: bride5Tex, x: -15, y: -3.8, sizeRaw: 1.7, delay: 1.5, multiplier: 0.15 },
+    { type: 'SlideText', tex: text91Tex, x: 1, y: 22.5, sizeMult: 0.8, delay: 1.5, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text93Tex, x: -19, y: -25.5, sizeMult: 0.6, delay: 2.3, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text94Tex, x: -1, y: -26.5, sizeMult: 0.5, delay: 2.5, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text92Tex, x: 20, y: -30.5, sizeMult: 0.65, delay: 2, multiplier: 0.12, zOffset: 2 },
   ];
 
   const rsvpSlideConfig = [
@@ -1276,11 +1278,11 @@ export function CinematicScene() {
                   {rundownSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
               )}
-              {/* {slide.id === "dresscode" && (
+              {slide.id === "dresscode" && (
                 <>
                   {dresscodeSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
-              )} */}
+              )}
               {slide.id === "stories" && (
                 <>
                   {storySlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}

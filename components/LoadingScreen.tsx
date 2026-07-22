@@ -92,7 +92,7 @@ export function LoadingScreen() {
         </div>
 
         <h1 className="text-[#F8F3ED] font-serif text-lg tracking-[0.2em] uppercase font-light mb-3">
-          Qonita &amp; Bagja
+          Yuliana &amp; Bayu
         </h1>
 
         <div className="h-6 overflow-hidden relative w-64 flex items-center justify-center">
