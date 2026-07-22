@@ -19,7 +19,7 @@ export function LoadingScreen() {
 
   // 1. Handle Back/Forward Cache Restorations
   useEffect(() => {
-    const handlePageShow = (event) => {
+    const handlePageShow = (event: { persisted: any; }) => {
       // If the page was restored from bfcache
       if (event.persisted) {
         // Option A: Just keep it hidden cleanly
