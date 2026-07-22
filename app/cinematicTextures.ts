@@ -37,7 +37,6 @@ const rawDecorationTextures = {
     </defs>
   </svg>`),
 
-  // custom: WEDDING_CONFIG.decorations.assets.custom.url,
   bunga1: "/Bunga1.png",
   bunga2: "/Bunga2.png",
   bunga3: "/Bunga3.png",
