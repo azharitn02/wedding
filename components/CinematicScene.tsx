@@ -1060,7 +1060,7 @@ export function CinematicScene() {
   const [ logo1Tex, text11Tex, text12Tex, text13Tex, text14Tex, text15Tex, bunga1Tex, bunga2Tex, bunga3Tex, couple2Tex, border2Tex, text21Tex, text22Tex, text23Tex, surah3Tex, terjemah3Tex, bride4Tex, text41Tex, text42Tex, text43Tex, bride5Tex, text51Tex, text52Tex, text53Tex, border6Tex, text61Tex, text62Tex, text71Tex, text72Tex, text7OrtuTex, text7OrtuTglTex, text7AkadTex, text7AkadTglTex, text7ResepsiTex, text7ResepsiTglTex, text81Tex, text82Tex, palette8Tex, text91Tex, text92Tex, text93Tex, text94Tex, image91Tex, image92Tex, text111Tex, text121Tex, text122Tex, text123Tex, border12Tex, logo131Tex] = loadedTextures.slice(pointer);
 
   const introSlideConfig = [
-    { type: 'SlideText', tex: logo1Tex, x: 1, y: 13.5, sizeMult: 0.1, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: logo1Tex, x: 1, y: 13.5, sizeMult: 0.1, delay: 2.8, multiplier: 0.12, zOffset: 2 },
     { type: 'SlideText', tex: text11Tex, x: 1, y: -3, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
     { type: 'SlideText', tex: text12Tex, x: 1, y: -2, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
     { type: 'SlideRotate', tex: text13Tex, x: 1, y: -4.5, sizeMult: 0.26, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle" },
@@ -1077,7 +1077,7 @@ export function CinematicScene() {
     { type: 'SlideRotate', tex: bunga2Tex, x: 23, y: -12.5, sizeMult: 0.4, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle" },
     { type: 'SlideRotate', tex: bunga3Tex, x: -19, y: -2, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.1, pivot: "middle" },
     { type: 'SlideText', tex: text21Tex, x: 1, y: 22, sizeMult: 0.85, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text22Tex, x: 1, y: 23, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text22Tex, x: 1, y: 23, sizeMult: 0.6, delay: 1, multiplier: 0.12, zOffset: 2 },
     { type: 'SlideText', tex: text23Tex, x: -1, y: -29, sizeMult: 0.8, delay: 2, multiplier: 0.12, zOffset: 2},
   ];
 
@@ -1089,7 +1089,7 @@ export function CinematicScene() {
   const brideSlideConfig = [
     { type: 'SlidePicture', tex: bride4Tex, x: 1, y: -2.5, sizeRaw: 2.5, delay: 1, multiplier: 0.1 },
     { type: 'SlideRotate', tex: text41Tex, x: 2.5, y: 28.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1, rotateAmount: 0.1, pivot: "top" },
-    { type: 'SlideText', tex: text42Tex, x: 1, y: -28, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text42Tex, x: 1, y: -28, sizeMult: 0.68, delay: 2.5, multiplier: 0.12, zOffset: 2 },
     { type: 'SlideText', tex: text43Tex, x: 1, y: -33, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
     // { type: 'SlideHtml', x: 2, y: -28, sizeRaw: 0.5, delay: 1, multiplier: 0.12, link: "https://www.instagram.com/qonitaaf_?igsh=MWh6cDg4eWtvZjZtcQ%3D%3D&utm_source=qr", text: "@qonitaaf_" }
   ];
@@ -1097,8 +1097,8 @@ export function CinematicScene() {
   const groomSlideConfig = [
     { type: 'SlidePicture', tex: bride5Tex, x: 1, y: -2.5, sizeRaw: 2.57, delay: 1, multiplier: 0.1 },
     { type: 'SlideRotate', tex: text51Tex, x: 1, y: 28, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1, rotateAmount: 0.1, pivot: "top" },
-    { type: 'SlideText', tex: text52Tex, x: 1, y: -31.5, sizeMult: 0.68, delay: 2, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text53Tex, x: 1, y: -36.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text52Tex, x: 1, y: -28.5, sizeMult: 0.68, delay: 2.5, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text53Tex, x: 1, y: -32.5, sizeMult: 0.8, delay: 2, multiplier: 0.12, zOffset: 2 },
     // { type: 'SlideHtml', x: 2, y: -33, sizeRaw: 0.5, delay: 1, multiplier: 0.12, link: "https://www.instagram.com/bagjamulyana_?igsh=bno5NjY5ang4OGFm", text: "@bagjamulyana_" }
   ];
 
@@ -1111,12 +1111,12 @@ export function CinematicScene() {
   const rundownSlideConfig = [
     { type: 'SlidePicture', tex: text71Tex, x: 1, y: 22, sizeMult: 0.6, delay: 2, multiplier: 0, zOffset: 2 },
     { type: 'SlidePicture', tex: text72Tex, x: 1, y: -19, sizeMult: 0.55, delay: 2, multiplier: 0, zOffset: 2 },
-    { type: 'SlideText', tex: text7OrtuTex, x: 2, y: 15.8, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    // { type: 'SlideText', tex: text7OrtuTglTex, x: 1, y: 7, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7AkadTex, x: 1.5, y: -1.3, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7AkadTglTex, x: 1.5, y: -1.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7ResepsiTex, x: 1.5, y: -18, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7ResepsiTglTex, x: 1.5, y: -22.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    { type: 'SlideText', tex: text7AkadTex, x: 1, y: 15.8, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    // { type: 'SlideText', tex: text7AkadTglTex, x: 1, y: 10, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    { type: 'SlideText', tex: text7ResepsiTex, x: 0.5, y: -1.9, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    // { type: 'SlideText', tex: text7ResepsiTglTex, x: 1.5, y: -1.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    { type: 'SlideText', tex: palette8Tex, x: 0.5, y: -19, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    { type: 'SlideHtml', tex: text7ResepsiTglTex, x: 0, y: -29, sizeMult: 0.55, delay: 2, multiplier: 0.12, link: "https://maps.app.goo.gl/k8Vzo88j5rpBji9U6?g_st=iw", text: "Open Maps"  },
     // { type: 'SlideHtml', x: 1, y: -30.5, sizeRaw: 0.2, delay: 1, multiplier: 0.12, link: "https://maps.app.goo.gl/k8Vzo88j5rpBji9U6?g_st=iw", text: "Open Maps" },
     { type: 'SlideRotate', tex: bunga1Tex, x: 27, y: 21.5, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" },
     { type: 'SlideRotate', tex: bunga3Tex, x: -27, y: 1, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" }
@@ -1130,12 +1130,12 @@ export function CinematicScene() {
   ];
 
   const storySlideConfig = [
-    { type: 'SlideText', tex: bride5Tex, x: 18, y: -10.5, sizeRaw: 1.7, delay: 1, multiplier: 0.1 },
+    { type: 'SlideText', tex: bride5Tex, x: 18, y: -10.5, sizeRaw: 1.7, delay: 0.5, multiplier: 0.1 },
     { type: 'SlideText', tex: bride4Tex, x: -15, y: -3.8, sizeRaw: 1.7, delay: 1.5, multiplier: 0.15 },
     { type: 'SlideText', tex: text91Tex, x: 1, y: 22.5, sizeMult: 0.8, delay: 1.5, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text92Tex, x: -19, y: -22.5, sizeMult: 0.7, delay: 2.3, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text92Tex, x: -19, y: -22.5, sizeMult: 0.7, delay: 2, multiplier: 0.12, zOffset: 2 },
     { type: 'SlideText', tex: text94Tex, x: -1, y: -26.5, sizeMult: 0.5, delay: 2.5, multiplier: 0.12, zOffset: 2 },
-    { type: 'SlideText', tex: text93Tex, x: 20, y: -33.5, sizeMult: 0.65, delay: 2, multiplier: 0.12, zOffset: 2 },
+    { type: 'SlideText', tex: text93Tex, x: 20, y: -33.5, sizeMult: 0.65, delay: 1.5, multiplier: 0.12, zOffset: 2 },
   ];
 
   const rsvpSlideConfig = [
@@ -1278,11 +1278,11 @@ export function CinematicScene() {
                   {rundownSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
               )}
-              {slide.id === "dresscode" && (
+              {/* {slide.id === "dresscode" && (
                 <>
                   {dresscodeSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
-              )}
+              )} */}
               {slide.id === "stories" && (
                 <>
                   {storySlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
