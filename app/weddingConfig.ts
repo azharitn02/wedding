@@ -75,14 +75,14 @@ export const WEDDING_CONFIG = {
       elements: [
       ]
     },
-    // {
-    //   id: "dresscode",
-    //   background: "/background/08&11 dresscode dan gift.JPG",
-    //   bgHeightMultiplier: 0.5, // Adjust height of the background (e.g., 0.8 to shrink, 1.2 to stretch vertically)
-    //   bgWidthMultiplier: 0.75,  // Adjust width of the background (e.g., 0.8 to shrink, 1.2 to stretch horizontally)
-    //   elements: [
-    //   ]
-    // },
+    {
+      id: "dresscode",
+      background: "/background/08&11 dresscode dan gift.JPG",
+      bgHeightMultiplier: 0.5, // Adjust height of the background (e.g., 0.8 to shrink, 1.2 to stretch vertically)
+      bgWidthMultiplier: 0.75,  // Adjust width of the background (e.g., 0.8 to shrink, 1.2 to stretch horizontally)
+      elements: [
+      ]
+    },
     {
       id: "stories",
       background: "/background/09 Kata kata.JPG",

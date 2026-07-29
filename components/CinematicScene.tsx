@@ -1108,16 +1108,29 @@ export function CinematicScene() {
     { type: 'SlideHeartbeat', tex: text62Tex, x: 1, y: -1, sizeMult: 0.65, delay: 0.1, multiplier: 0.12, zOffset: 2 }
   ];
 
+  // const rundownSlideConfig = [
+  //   { type: 'SlidePicture', tex: text71Tex, x: 1, y: 22, sizeMult: 0.6, delay: 2, multiplier: 0, zOffset: 2 },
+  //   { type: 'SlidePicture', tex: text72Tex, x: 1, y: -19, sizeMult: 0.55, delay: 2, multiplier: 0, zOffset: 2 },
+  //   { type: 'SlideText', tex: text7AkadTex, x: 1, y: 15.8, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+  //   // { type: 'SlideText', tex: text7AkadTglTex, x: 1, y: 10, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+  //   { type: 'SlideText', tex: text7ResepsiTex, x: 0.5, y: -1.9, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+  //   // { type: 'SlideText', tex: text7ResepsiTglTex, x: 1.5, y: -1.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+  //   { type: 'SlideText', tex: palette8Tex, x: 0.5, y: -19, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+  //   { type: 'SlideHtml', tex: text7ResepsiTglTex, x: 0, y: -29, sizeMult: 0.55, delay: 2, multiplier: 0.12, link: "https://maps.app.goo.gl/k8Vzo88j5rpBji9U6?g_st=iw", text: "Open Maps"  },
+  //   // { type: 'SlideHtml', x: 1, y: -30.5, sizeRaw: 0.2, delay: 1, multiplier: 0.12, link: "https://maps.app.goo.gl/k8Vzo88j5rpBji9U6?g_st=iw", text: "Open Maps" },
+  //   { type: 'SlideRotate', tex: bunga1Tex, x: 27, y: 21.5, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" },
+  //   { type: 'SlideRotate', tex: bunga3Tex, x: -27, y: 1, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" }
+  // ];
+
   const rundownSlideConfig = [
     { type: 'SlidePicture', tex: text71Tex, x: 1, y: 22, sizeMult: 0.6, delay: 2, multiplier: 0, zOffset: 2 },
     { type: 'SlidePicture', tex: text72Tex, x: 1, y: -19, sizeMult: 0.55, delay: 2, multiplier: 0, zOffset: 2 },
-    { type: 'SlideText', tex: text7AkadTex, x: 1, y: 15.8, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    // { type: 'SlideText', tex: text7AkadTglTex, x: 1, y: 10, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: text7ResepsiTex, x: 0.5, y: -1.9, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    // { type: 'SlideText', tex: text7ResepsiTglTex, x: 1.5, y: -1.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideText', tex: palette8Tex, x: 0.5, y: -19, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
-    { type: 'SlideHtml', tex: text7ResepsiTglTex, x: 0, y: -29, sizeMult: 0.55, delay: 2, multiplier: 0.12, link: "https://maps.app.goo.gl/k8Vzo88j5rpBji9U6?g_st=iw", text: "Open Maps"  },
-    // { type: 'SlideHtml', x: 1, y: -30.5, sizeRaw: 0.2, delay: 1, multiplier: 0.12, link: "https://maps.app.goo.gl/k8Vzo88j5rpBji9U6?g_st=iw", text: "Open Maps" },
+    { type: 'SlideText', tex: text7OrtuTex, x: 2, y: 15, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    // { type: 'SlideText', tex: text7OrtuTglTex, x: 1, y: 7, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    { type: 'SlideText', tex: text7AkadTex, x: 1.5, y: -2, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    // { type: 'SlideText', tex: text7AkadTglTex, x: 1.5, y: -1.5, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    { type: 'SlideText', tex: text7ResepsiTex, x: 1.5, y: -21, sizeMult: 0.6, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
+    // { type: 'SlideText', tex: text7ResepsiTglTex, x: 1.5, y: -22.5, sizeMult: 0.55, delay: 2, multiplier: 0.12, zOffset: 2, animation: false },
     { type: 'SlideRotate', tex: bunga1Tex, x: 27, y: 21.5, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" },
     { type: 'SlideRotate', tex: bunga3Tex, x: -27, y: 1, sizeMult: 0.5, delay: 2, multiplier: 0.12, zOffset: 2, rotateSpeed: 1.5, rotateAmount: 0.05, pivot: "middle" }
   ];
@@ -1278,11 +1291,11 @@ export function CinematicScene() {
                   {rundownSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
               )}
-              {/* {slide.id === "dresscode" && (
+              {slide.id === "dresscode" && (
                 <>
                   {dresscodeSlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
                 </>
-              )} */}
+              )}
               {slide.id === "stories" && (
                 <>
                   {storySlideConfig.map((config, i) => renderSlideElement(config, i, slideW, bgW, bgH, index))}
